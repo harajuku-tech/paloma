@@ -9,8 +9,9 @@ Welcome to paloma's documentation!
 Contents:
 
 .. toctree::
-   :maxdepth: 2
+    :maxdepth: 2
 
+    note
 
 
 Indices and tables

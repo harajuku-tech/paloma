@@ -44,3 +44,20 @@ tools
 
     - ssh://hg@bitbucket.org/hdknr/mandb
 
+south
+---------
+
+celery needs the following talbe. "syncdb" DON'T create those with "south". 
+First time syncdb without "south".
+
+::
+
+    Creating table celery_taskmeta
+    Creating table celery_tasksetmeta
+    Creating table djcelery_intervalschedule
+    Creating table djcelery_crontabschedule
+    Creating table djcelery_periodictasks
+    Creating table djcelery_periodictask
+    Creating table djcelery_workerstate
+    Creating table djcelery_taskstate
+    

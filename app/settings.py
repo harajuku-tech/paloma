@@ -119,6 +119,8 @@ INSTALLED_APPS = (
     # 'django.contrib.admin',
     # Uncomment the next line to enable admin documentation:
     # 'django.contrib.admindocs',
+    'paloma',
+    'sample',
 )
 
 # A sample logging configuration. The only tangible logging
@@ -154,21 +156,22 @@ INSTALLED_APPS +=('mandb',)  #:  tools for MySQL
 
 # - south
 if 'test' not in sys.argv:
-    INSTALLED_APPS +=('south',)  #: for Model Migration
+    #: Use south after celery related tables are created.
+    #:INSTALLED_APPS +=('south',)  #: for Model Migration
+    pass
 
 # - django-celery
 INSTALLED_APPS += ('djcelery','djkombu',)
 BROKER_URL="django://"
+#CELERY_ALWAYS_EAGER = True
 import djcelery
 djcelery.setup_loader()
 
-# - djcelery_email
-INSTALLED_APPS += ("djcelery_email",)
-EMAIL_BACKEND = 'djcelery_email.backends.CeleryEmailBackend'
-CELERY_EMAIL_BACKEND = 'django.core.mail.backends.locmem.EmailBackend'
-CELERY_ALWAYS_EAGER = True
-CELERY_EMAIL_TASK_CONFIG = {
-    'queue' : 'django_email',
-    'delivery_mode' : 1, # non persistent
-    'rate_limit' : '50/m', # 50 emails per minute
-}
+# - paloma
+EMAIL_BACKEND = 'paloma.backends.CeleryEmailBackend'
+PALOMA_EMAIL_BACKEND = 'django.core.mail.backends.locmem.EmailBackend'
+#CELERY_EMAIL_TASK_CONFIG = {
+#    'queue' : 'django_email',
+#    'delivery_mode' : 1, # non persistent
+#    'rate_limit' : '50/m', # 50 emails per minute
+#}

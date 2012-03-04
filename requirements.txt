@@ -2,3 +2,4 @@ Django
 MySQL-python
 Sphinx
 Werkzeug
+south

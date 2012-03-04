@@ -8,7 +8,7 @@ import commands
 import os
 
 class Command(BaseCommand):
-    ''' paloma maile management
+    ''' paloma postfix management
     '''
     args = ''
     help = ''
@@ -21,11 +21,11 @@ class Command(BaseCommand):
             default='help',
             help=u'sub command'),
 
-        make_option('--file',
+        make_option('--id',
             action='store',
-            dest='file',
-            default='stdin',
-            help=u'flle'),
+            dest='id',
+            default='help',
+            help=u'message id'),
 
         make_option('--encoding',
             action='store',
@@ -35,18 +35,33 @@ class Command(BaseCommand):
         )
     ''' Command Option '''
 
-    def handle_send(self,*args,**options):
-        '''　send
+    def handle_qlist(self,*args,**options):
+        '''　qlist
 
         '''
-        import sys
-        from email import message_from_file
-        fp = sys.stdin if options['file'] == 'stdin' else open(options['file'])
-        msg = message_from_file(fp)
+        import commands
+        import re
+        item = [ 
+                r'^(?P<id>.+)',
+                r'(?P<size>\d+)',
+                r'(?P<day>.+)',
+                r'(?P<month>.+)',
+                r'(?P<date>\d+)',
+                r'(?P<time>\d{2}:\d{2}:\d{2})',
+                r'(?P<from>.+)$',
+            ]
+        pat = re.compile('\\s' .join(item))
 
-        from django.core.mail import send_mail
-        send_mail(msg['Subject'],str(msg),msg['From'],msg['To'].split(',') )
+        for l in commands.getoutput('mailq').split('\n'):
+            s = pat.search(l)  
+            if s : 
+                print l
 
+    def handle_delete(self,*args,**options):
+        ''' delete message from queue '''
+        options['id']= options['id'].replace('*','')
+        print commands.getoutput('sudo  postsuper -d %(id)s' % options )
+        
     def handle_help(self,*args,**options):
         '''  help
         '''

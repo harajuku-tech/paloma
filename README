@@ -2,3 +2,45 @@ paloma
 ========================================================================
 
 under development.
+
+django-celery
+------------------
+
+install
+^^^^^^^^^^^^^^^^^^
+
+::
+
+   $  pip install django-celery --upgrade
+
+MySQL for queue engine
+^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+settins.py::
+
+    INSTALLED_APPS += ('djcelery','djkombu',) 
+    import djcelery 
+    djcelery.setup_loader() 
+    BROKER_URL="django://" 
+
+django-
+------------
+
+install
+^^^^^^^^^^^
+
+clone HDKNR.COM's cloned version (for the time being ):
+
+    https://bitbucket.org/hdknr/django-celery-email
+
+::
+
+    $pip install -e hg+ssh://hg@bitbucket.org/(_user_name_)/django-celery-email#egg=django_celery_email
+
+tools
+--------
+
+- mandb
+
+    - ssh://hg@bitbucket.org/hdknr/mandb
+

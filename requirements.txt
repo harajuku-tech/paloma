@@ -2,7 +2,7 @@ Django
 MySQL-python
 Sphinx
 Werkzeug
-south
+django-celery
 django-kombu
 kombu
-
+south

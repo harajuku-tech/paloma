@@ -3,3 +3,6 @@ MySQL-python
 Sphinx
 Werkzeug
 south
+django-kombu
+kombu
+

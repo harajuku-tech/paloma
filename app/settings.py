@@ -1,5 +1,5 @@
 # Django settings for app project.
-
+import sys,os
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 
@@ -11,10 +11,10 @@ MANAGERS = ADMINS
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.', # Add 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
-        'NAME': '',                      # Or path to database file if using sqlite3.
-        'USER': '',                      # Not used with sqlite3.
-        'PASSWORD': '',                  # Not used with sqlite3.
+        'ENGINE': 'django.db.backends.mysql', # Add 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
+        'NAME': 'paloma',                      # Or path to database file if using sqlite3.
+        'USER': 'paloma',                      # Not used with sqlite3.
+        'PASSWORD': 'paloma',                  # Not used with sqlite3.
         'HOST': '',                      # Set to empty string for localhost. Not used with sqlite3.
         'PORT': '',                      # Set to empty string for default. Not used with sqlite3.
     }
@@ -142,4 +142,33 @@ LOGGING = {
             'propagate': True,
         },
     }
+}
+
+# ---- Custom Configuration 
+
+# - paloma
+INSTALLED_APPS +=('paloma',)  #: this project.
+
+# - mandb 
+INSTALLED_APPS +=('mandb',)  #:  tools for MySQL
+
+# - south
+if 'test' not in sys.argv:
+    INSTALLED_APPS +=('south',)  #: for Model Migration
+
+# - django-celery
+INSTALLED_APPS += ('djcelery','djkombu',)
+BROKER_URL="django://"
+import djcelery
+djcelery.setup_loader()
+
+# - djcelery_email
+INSTALLED_APPS += ("djcelery_email",)
+EMAIL_BACKEND = 'djcelery_email.backends.CeleryEmailBackend'
+CELERY_EMAIL_BACKEND = 'django.core.mail.backends.locmem.EmailBackend'
+CELERY_ALWAYS_EAGER = True
+CELERY_EMAIL_TASK_CONFIG = {
+    'queue' : 'django_email',
+    'delivery_mode' : 1, # non persistent
+    'rate_limit' : '50/m', # 50 emails per minute
 }

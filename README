@@ -23,6 +23,24 @@ settins.py::
     djcelery.setup_loader() 
     BROKER_URL="django://" 
 
+InnoDB ? Lock down the transaction isolation level to COMMIT READ 
+( form MySQL default REPEATABLE READ )
+
+::
+
+    (paloma)hdknr@sqg:~$ sudo vi /etc/mysql/my.cnf 
+
+
+    [mysqld]
+    transaction-isolation = READ-COMMITTED
+
+
+    (paloma)hdknr@sqg:~$ sudo /etc/init.d/mysql restart
+    Stopping MySQL database server: mysqld
+    .
+    Starting MySQL database server: mysqld . . . . . . ..
+    Checking for corrupt, not cleanly closed and upgrade needing tables..
+
 
 tools
 --------

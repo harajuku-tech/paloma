@@ -32,5 +32,15 @@ def send_email(message, **kwargs):
                     message.to)
         send_email.retry(exc=e)
 
+@task
+def bounce(message_text,*args,**kwawrs):
+    ''' bounce worker '''
+    import email  
+    from models import Message
+    try:
+        Message.objects.handle_incomming_mail( email.message_from_string(message_text))
+    except Exception,e:
+        print e
+
 # backwards compat
 SendEmailTask = send_email

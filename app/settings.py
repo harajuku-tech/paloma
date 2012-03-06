@@ -175,3 +175,9 @@ PALOMA_EMAIL_BACKEND = 'django.core.mail.backends.locmem.EmailBackend'
 #    'delivery_mode' : 1, # non persistent
 #    'rate_limit' : '50/m', # 50 emails per minute
 #}
+
+# -- django-extensinon
+
+# - mandb 
+INSTALLED_APPS +=('django_extensions',)  #:  tools for django-extensions
+

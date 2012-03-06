@@ -48,11 +48,12 @@ from setuptools import setup
 # - Meta Info
 
 from paloma import get_version
+import glob
 
 NAME='paloma'
 DESCRIPTION=''
 PACKAGES=['paloma',]
-SCRIPTS=[ ]
+SCRIPTS=glob.glob('src/scripts/*.py')
 try:
     INSTALL_REQUIRES=[ r for r in open('requirements.txt').read().split('\n') if len(r)>0]
 except:

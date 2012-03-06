@@ -8,7 +8,12 @@ class Command(GenericCommand):
     
     def handle_main(self,*args,**options):
         ''' main '''
-        print "bouncer main"
+        import sys
+        if sys.stdin.isatty():
+            #: no stdin
+            return
+
+        print sys.stdin.read()
 
     def handle(self  ,*args, **options):
         '''  command main '''

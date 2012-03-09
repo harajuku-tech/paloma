@@ -18,10 +18,14 @@ admin.site.register(Draft,DraftAdmin)
 class ScheduleAdmin(admin.ModelAdmin):
     pass
 admin.site.register(Schedule,ScheduleAdmin)
-### Member 
-class MemberAdmin(admin.ModelAdmin):
+### Mailbox 
+class MailboxAdmin(admin.ModelAdmin):
     pass
-admin.site.register(Member,MemberAdmin)
+admin.site.register(Mailbox,MailboxAdmin)
+### Optin 
+class OptinAdmin(admin.ModelAdmin):
+    pass
+admin.site.register(Optin,OptinAdmin)
 ### Message 
 class MessageAdmin(admin.ModelAdmin):
     pass

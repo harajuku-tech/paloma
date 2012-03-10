@@ -106,6 +106,24 @@ class Schedule(models.Model):
 
     def __unicode__(self):
         return self.subject + self.dt_start.strftime('(%Y-%m-%d %H:%M:%S) by ' + self.owner.__unicode__())
+
+    def generate_messages(self):
+        from django.template import Template,Context
+        for g in self.groups.all():
+            for m in g.mailbox_set.all():             
+                context = {
+                    'owner':self.owner,
+                    'mail':self,
+                    'group':g,
+                    'user':m.user,
+                }
+                msg=None
+                try:
+                    msg = Message.objects.get(schedule=self,mailbox=m )
+                except Exception,e:
+                    msg = Message(schedule=self,mailbox=m )
+                msg.text = Template(self.text).render(Context(context))
+                msg.save()
     
 class MessageManager(models.Manager):
     ''' Message Manager'''

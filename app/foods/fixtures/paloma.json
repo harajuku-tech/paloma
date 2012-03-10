@@ -4,7 +4,7 @@
     "model": "paloma.owner", 
     "fields": {
       "domain": "paloma.deb", 
-      "forward_to": "gmail@admin.deb", 
+      "forward_to": "gmail@hoge.com", 
       "user": 1, 
       "name": "Tokyo Marche"
     }
@@ -57,7 +57,7 @@
     "pk": 1, 
     "model": "paloma.schedule", 
     "fields": {
-      "text": "Hello. Here comes our Spring Sale.", 
+      "text": "Hello. Here comes our Spring Sale.\r\nUSER={{ user}} \r\nGENDER={{user.customer.gender}} \r\n{{mail.promotion.product.price}}", 
       "dt_start": "2012-03-10 06:00:00", 
       "forward_to": "", 
       "groups": [
@@ -72,8 +72,17 @@
     "pk": 1, 
     "model": "paloma.message", 
     "fields": {
-      "text": "", 
+      "text": "Hello. Here comes our Spring Sale.", 
       "mailbox": 1, 
+      "schedule": 1
+    }
+  }, 
+  {
+    "pk": 2, 
+    "model": "paloma.message", 
+    "fields": {
+      "text": "Hello. Here comes our Spring Sale.", 
+      "mailbox": 2, 
       "schedule": 1
     }
   }

@@ -12,6 +12,20 @@ from django.core import mail
 #
 from djcelery_email.tasks import send_email
 
+class ScheduleTests(TestCase):
+
+    fixtures=['auth','paloma','foods']
+
+    def test_simple(self):
+        ''' python manage.py test foods.ScheduleTests.test_simple
+        '''
+        from paloma.models import Schedule,Message
+        for m in Schedule.objects.all():
+            print m.text 
+            m.generate_messages()
+
+        for m in Message.objects.all():
+            print m.text 
 
 class DjangoCeleryEmailTests(TestCase):
 

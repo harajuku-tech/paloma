@@ -7,12 +7,14 @@ from django.contrib.auth import authenticate
 from django.core.urlresolvers import reverse
 
 from datetime import datetime,timedelta
+import sys,traceback
 
 from paloma.models import AbstractProfile,Group,Schedule,Owner
 
 class Company(AbstractProfile):
     ''' Company '''
     owner =  models.OneToOneField(Owner,verbose_name=u'Owner')
+    ''' owner '''
     
     def __unicode__(self):
         return self.owner.__unicode__()
@@ -69,3 +71,28 @@ class Promotion(AbstractProfile):
 
     name = models.CharField(u'Promotion Name',max_length=100)
     ''' Promotio Name '''
+
+    def target_context(self,group,user):
+        ''' 
+            :param group: paloma.models.Group
+            :param user:  django.contrib.auth.models.User
+        '''         
+        try:
+            price = self.product.price_set.get(shop__group = group )
+            return {    
+                    'price':price, 
+                    'product':price.product, 
+                    'shop':price.shop,
+                    'company':self.product.company,
+                    'customer':user.customer,
+                    }
+        except Exception,e:
+            print "Promotion.target_context:",type(e),e
+            traceback.print_exc(file=sys.stdout)
+            return {}
+        
+
+class GoldPromotion(AbstractProfile):
+    schedule= models.OneToOneField(Schedule,verbose_name=u'Promotion Scheudle')
+    ''' Promotion Schedule'''
+    

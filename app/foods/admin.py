@@ -30,3 +30,7 @@ class PromotionAdmin(admin.ModelAdmin):
     list_display=('schedule','product','name',)
 admin.site.register(Promotion,PromotionAdmin)
 
+### GoldPromotion 
+class GoldPromotionAdmin(admin.ModelAdmin):
+    pass
+admin.site.register(GoldPromotion,GoldPromotionAdmin)

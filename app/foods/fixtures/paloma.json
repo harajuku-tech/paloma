@@ -57,7 +57,7 @@
     "pk": 1, 
     "model": "paloma.schedule", 
     "fields": {
-      "text": "Hello. Here comes our Spring Sale.\r\nUSER={{ user}} \r\nGENDER={{user.customer.gender}} \r\n{{mail.promotion.product.price}}", 
+      "text": "Hello. Here comes our Spring Sale.\r\nUSER={{ user}} \r\nGENDER={{customer.gender}} \r\n{{product.name}}={{price.price}}", 
       "dt_start": "2012-03-10 06:00:00", 
       "forward_to": "", 
       "groups": [

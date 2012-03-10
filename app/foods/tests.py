@@ -27,6 +27,17 @@ class ScheduleTests(TestCase):
         for m in Message.objects.all():
             print m.text 
 
+    def test_get_context(self):
+        ''' python manage.py test foods.ScheduleTests.test_get_context
+        '''
+        from paloma.models import Schedule
+        
+        for s in Schedule.objects.all():
+            for g in s.groups.all():
+                for m in g.mailbox_set.all():
+                    print s.get_context(g,m.user)
+            
+
 class DjangoCeleryEmailTests(TestCase):
 
     def test_sending_email(self):

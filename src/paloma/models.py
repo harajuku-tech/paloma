@@ -7,6 +7,7 @@ from django.contrib.auth import authenticate
 from django.core.urlresolvers import reverse
 
 from datetime import datetime,timedelta
+import sys,traceback
 
 class AbstractProfile(models.Model):
     ''' Profile meta class'''
@@ -107,16 +108,21 @@ class Schedule(models.Model):
     def __unicode__(self):
         return self.subject + self.dt_start.strftime('(%Y-%m-%d %H:%M:%S) by ' + self.owner.__unicode__())
 
+    def get_context(self,group,user):
+        context = {}
+        for ref in self._meta.get_all_related_objects():
+            if ref.model in AbstractProfile.__subclasses__():
+                try:
+                    context.update( getattr(self,ref.var_name ).target_context(group,user) )
+                except Exception,e:
+                    pass 
+        return context
+
     def generate_messages(self):
         from django.template import Template,Context
         for g in self.groups.all():
             for m in g.mailbox_set.all():             
-                context = {
-                    'owner':self.owner,
-                    'mail':self,
-                    'group':g,
-                    'user':m.user,
-                }
+                context = self.get_context(g,m.user )
                 msg=None
                 try:
                     msg = Message.objects.get(schedule=self,mailbox=m )

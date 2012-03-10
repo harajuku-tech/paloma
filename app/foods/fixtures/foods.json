@@ -1,0 +1,74 @@
+[
+  {
+    "pk": 1, 
+    "model": "foods.company", 
+    "fields": {
+      "owner": 1
+    }
+  }, 
+  {
+    "pk": 1, 
+    "model": "foods.shop", 
+    "fields": {
+      "group": 1
+    }
+  }, 
+  {
+    "pk": 2, 
+    "model": "foods.shop", 
+    "fields": {
+      "group": 2
+    }
+  }, 
+  {
+    "pk": 1, 
+    "model": "foods.customer", 
+    "fields": {
+      "gender": 0, 
+      "user": 2
+    }
+  }, 
+  {
+    "pk": 2, 
+    "model": "foods.customer", 
+    "fields": {
+      "gender": 1, 
+      "user": 3
+    }
+  }, 
+  {
+    "pk": 1, 
+    "model": "foods.product", 
+    "fields": {
+      "company": 1, 
+      "name": "Grilled Chicken"
+    }
+  }, 
+  {
+    "pk": 1, 
+    "model": "foods.price", 
+    "fields": {
+      "shop": 1, 
+      "product": 1, 
+      "price": "500"
+    }
+  }, 
+  {
+    "pk": 2, 
+    "model": "foods.price", 
+    "fields": {
+      "shop": 2, 
+      "product": 1, 
+      "price": "600"
+    }
+  }, 
+  {
+    "pk": 1, 
+    "model": "foods.promotion", 
+    "fields": {
+      "product": 1, 
+      "name": "Grilled Chicken Sale", 
+      "schedule": 1
+    }
+  }
+]

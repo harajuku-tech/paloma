@@ -29,7 +29,7 @@ class Owner(models.Model):
     ''' Forward address for incomming email '''
 
     def __unicode__(self):
-        return self.user.__unicode__()
+        return self.user.__unicode__() + "@%s"%self.domain
 
 class Group(models.Model):
     ''' Group
@@ -86,7 +86,7 @@ class Schedule(models.Model):
     owner= models.ForeignKey(Owner,verbose_name=u'Owner' )
     ''' Owner'''
 
-    subject= models.CharField(u'Subject',max_length=100 ,)
+    subject= models.CharField(u'Subject',max_length=101 ,)
     ''' Subject '''
 
     text =  models.TextField(u'Text',max_length=100 ,)

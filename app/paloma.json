@@ -1,0 +1,80 @@
+[
+  {
+    "pk": 1, 
+    "model": "paloma.owner", 
+    "fields": {
+      "domain": "paloma.deb", 
+      "forward_to": "gmail@admin.deb", 
+      "user": 1, 
+      "name": "Tokyo Marche"
+    }
+  }, 
+  {
+    "pk": 1, 
+    "model": "paloma.group", 
+    "fields": {
+      "owner": 1, 
+      "symbol": "shibuya", 
+      "name": "Shibuya Shop"
+    }
+  }, 
+  {
+    "pk": 2, 
+    "model": "paloma.group", 
+    "fields": {
+      "owner": 1, 
+      "symbol": "harajuku", 
+      "name": "Harajuku Shop"
+    }
+  }, 
+  {
+    "pk": 1, 
+    "model": "paloma.mailbox", 
+    "fields": {
+      "bounces": 0, 
+      "is_active": true, 
+      "user": 2, 
+      "groups": [
+        1
+      ], 
+      "address": "user1@user1.deb"
+    }
+  }, 
+  {
+    "pk": 2, 
+    "model": "paloma.mailbox", 
+    "fields": {
+      "bounces": 0, 
+      "is_active": true, 
+      "user": 3, 
+      "groups": [
+        2
+      ], 
+      "address": "user2@user2.deb"
+    }
+  }, 
+  {
+    "pk": 1, 
+    "model": "paloma.schedule", 
+    "fields": {
+      "text": "Hello. Here comes our Spring Sale.", 
+      "dt_start": "2012-03-10 06:00:00", 
+      "forward_to": "", 
+      "groups": [
+        1, 
+        2
+      ], 
+      "owner": 1, 
+      "subject": "Spring Sale '12"
+    }
+  }, 
+  {
+    "pk": 1, 
+    "model": "paloma.message", 
+    "fields": {
+      "text": "", 
+      "mailbox": 1, 
+      "schedule": 1
+    }
+  }
+]

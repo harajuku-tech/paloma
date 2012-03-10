@@ -4,29 +4,25 @@ from models import *
 
 ### Owner 
 class OwnerAdmin(admin.ModelAdmin):
-    pass
+    list_display=('name','user','domain','forward_to',)
 admin.site.register(Owner,OwnerAdmin)
+
 ### Group 
 class GroupAdmin(admin.ModelAdmin):
-    pass
+    list_display=('name','owner','symbol','main_address')
+    list_filter=('owner',)
 admin.site.register(Group,GroupAdmin)
-### Draft 
-class DraftAdmin(admin.ModelAdmin):
-    pass
-admin.site.register(Draft,DraftAdmin)
-### Schedule 
-class ScheduleAdmin(admin.ModelAdmin):
-    pass
-admin.site.register(Schedule,ScheduleAdmin)
+
 ### Mailbox 
 class MailboxAdmin(admin.ModelAdmin):
-    pass
+    list_display=('id', 'user', 'address', 'is_active', 'bounces' )
 admin.site.register(Mailbox,MailboxAdmin)
-### Optin 
-class OptinAdmin(admin.ModelAdmin):
-    pass
-admin.site.register(Optin,OptinAdmin)
+
+### Schedule 
+class ScheduleAdmin(admin.ModelAdmin):
+    list_display=['id', 'owner', 'subject', 'text', 'dt_start', 'forward_to']
+admin.site.register(Schedule,ScheduleAdmin)
 ### Message 
 class MessageAdmin(admin.ModelAdmin):
-    pass
+    list_display=('schedule','mailbox',)
 admin.site.register(Message,MessageAdmin)

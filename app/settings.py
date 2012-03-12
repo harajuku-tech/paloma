@@ -150,25 +150,28 @@ LOGGING = {
 # ---- Custom Configuration 
 
 # - paloma
+
 INSTALLED_APPS +=('paloma',)  #: this project.
 
-# - mandb 
+# - mandb for MySQL command shortcuts
+
 INSTALLED_APPS +=('mandb',)  #:  tools for MySQL
 
-# - south
+# - south for data migration
 if 'test' not in sys.argv:
     #: Use south after celery related tables are created.
 #    INSTALLED_APPS +=('south',)  #: for Model Migration
     pass
 
-# - django-celery
+# - django-celery for asynchoronous task queue
+
 INSTALLED_APPS += ('djcelery','djkombu',)
 BROKER_URL="django://"
 #CELERY_ALWAYS_EAGER = True
 import djcelery
 djcelery.setup_loader()
 
-# - paloma
+# - paloma for mail transfer agents
 EMAIL_BACKEND = 'paloma.backends.CeleryEmailBackend'
 PALOMA_EMAIL_BACKEND = 'django.core.mail.backends.locmem.EmailBackend'
 #CELERY_EMAIL_TASK_CONFIG = {
@@ -179,6 +182,6 @@ PALOMA_EMAIL_BACKEND = 'django.core.mail.backends.locmem.EmailBackend'
 
 # -- django-extensinon
 
-# - mandb 
 INSTALLED_APPS +=('django_extensions',)  #:  tools for django-extensions
+
 

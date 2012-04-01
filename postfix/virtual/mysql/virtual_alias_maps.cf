@@ -1,0 +1,5 @@
+user = postfix
+password = postfix
+hosts = localhost
+dbname = postfix
+query = SELECT goto FROM paloma_alias WHERE address ='%s' and goto is not null

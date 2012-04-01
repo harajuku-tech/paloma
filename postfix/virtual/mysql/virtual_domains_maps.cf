@@ -1,0 +1,5 @@
+user = postfix
+password = postfix
+hosts = localhost
+dbname = postfix
+query = SELECT domain FROM paloma_domain WHERE domain='%s' and ( transport='virtual' or transport='mailjail')

@@ -1,0 +1,5 @@
+user = postfix
+password = postfix
+hosts = localhost
+dbname = postfix
+query = SELECT maildir FROM paloma_alis WHERE username='%s' and maildir is not null

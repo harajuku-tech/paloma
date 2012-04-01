@@ -1,0 +1,70 @@
+# See /usr/share/postfix/main.cf.dist for a commented, more complete version
+
+
+# Debian specific:  Specifying a file name will cause the first
+# line of that file to be used as the name.  The Debian default
+# is /etc/mailname.
+#myorigin = /etc/mailname
+
+smtpd_banner = $myhostname ESMTP $mail_name (Debian/GNU)
+biff = no
+
+# appending .domain is the MUA's job.
+append_dot_mydomain = no
+
+# Uncomment the next line to generate "delayed mail" warnings
+#delay_warning_time = 4h
+
+readme_directory = no
+
+# TLS parameters
+smtpd_tls_cert_file=/etc/ssl/certs/ssl-cert-snakeoil.pem
+smtpd_tls_key_file=/etc/ssl/private/ssl-cert-snakeoil.key
+smtpd_use_tls=yes
+smtpd_tls_session_cache_database = btree:${data_directory}/smtpd_scache
+smtp_tls_session_cache_database = btree:${data_directory}/smtp_scache
+
+# See /usr/share/doc/postfix/TLS_README.gz in the postfix-doc package for
+# information on enabling SSL in the smtp client.
+#
+# - add paloma.localhost  to /etc/hosts
+
+myhostname = paloma.localhost
+alias_maps = hash:/etc/aliases
+alias_database = hash:/etc/aliases
+#myorigin = /etc/mailname
+myorigin = $myhostname
+mydestination = paloma.localhost, localhost.localhost, localhost
+relayhost = 
+mynetworks = 127.0.0.0/8 [::ffff:127.0.0.0]/104 [::1]/128
+mailbox_command = procmail -a "$EXTENSION"
+mailbox_size_limit = 0
+recipient_delimiter = +
+inet_interfaces = all
+
+# - captured this mail server transaport 
+#
+local_transport = local
+transport_maps = proxy:mysql:/etc/postfix/virtual/mysql/virtual_transport_maps.cf
+virtual_transport = proxy:mysql:/etc/postfix/virtual/mysql/virtual_transport_maps.cf
+virtual_alias_maps = proxy:mysql:/etc/postfix/virtual/mysql/virtual_alias_maps.cf
+virtual_alias_domains = $virtual_alias_maps
+virtual_mailbox_domains = proxy:mysql:/etc/postfix/virtual/mysql/virtual_domains_maps.cf
+virtual_mailbox_maps = proxy:mysql:/etc/postfix/virtual/mysql/virtual_mailbox_maps.cf
+virtual_mailbox_base=/home/mbox/user
+virtual_minimum_uid = 10000
+virtual_uid_maps = static:10000
+virtual_gid_maps = static:10000
+mailbox_size_limit = 51200000
+message_size_limit = 5120000
+virtual_mailbox_limit = 51200000
+virtual_mailbox_limit_maps = hash:/etc/postfix/vquota
+virtual_mailbox_limit_override = yes
+virtual_overquota_bounce = yes
+virtual_mailbox_limit_inbox = yes
+owner_request_special = no
+disable_dns_lookups = yes
+
+# - other domain goes to  this transapor in master.cf
+#
+default_transport = mailjail2

@@ -37,3 +37,9 @@ admin.site.register(Schedule,ScheduleAdmin)
 class MessageAdmin(admin.ModelAdmin):
     list_display=('schedule','mailbox',)
 admin.site.register(Message,MessageAdmin)
+
+### Jail 
+class JailAdmin(admin.ModelAdmin):
+    list_display=tuple([f.name for f in Jail._meta.fields ])
+admin.site.register(Jail,JailAdmin)
+

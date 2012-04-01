@@ -160,7 +160,7 @@ LOGGING = {
 # - paloma
 
 INSTALLED_APPS +=('paloma',)  #: this project.
-BOUNCE_HANDLER_ASYNC=False             #: Deafult=True
+BOUNCE_HANDLER_ASYNC=False             #: Deafult=True, False is for mainly developemnt
 
 # - mandb for MySQL command shortcuts
 
@@ -193,4 +193,8 @@ PALOMA_EMAIL_BACKEND = 'django.core.mail.backends.locmem.EmailBackend'
 
 INSTALLED_APPS +=('django_extensions',)  #:  tools for django-extensions
 
+
+# - logging
+import applogs
+applogs.config(LOGGING)
 

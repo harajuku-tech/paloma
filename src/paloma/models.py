@@ -234,3 +234,18 @@ class Message(models.Model):
 
     objects = MessageManager()
 
+
+class Jail(models.Model):
+    ''' Jail Message 
+
+        - mainly used for testing
+
+    '''
+    sender= models.CharField(u'Sender',max_length=100)
+    ''' sender '''
+    
+    receipient= models.CharField(u'Receipient',max_length=100)
+    ''' receipient '''
+
+    text = models.TextField(u'Message Text',default=None,blank=True,null=True)
+    ''' Message text '''

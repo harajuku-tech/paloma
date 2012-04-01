@@ -15,12 +15,6 @@ class GenericCommand(BaseCommand):
 
     option_list = BaseCommand.option_list + (
 
-        make_option('--command',
-            action='store',
-            dest='command',
-            default='bounce',
-            help=u'sub command'),
-
         make_option('--id',
             action='store',
             dest='id',
@@ -49,5 +43,7 @@ class GenericCommand(BaseCommand):
     def handle(self  ,*args, **options):
         '''  command main '''
 
-        getattr(self, 'handle_%s'% options['command'],Command.handle_help)(*args,**options)
-
+        if len(args) < 3 :
+            return "a sub command must be specfied"
+        self.command = args[0]
+        getattr(self, 'handle_%s'% self.command ,GenericCommand.handle_help)(*args,**options)

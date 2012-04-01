@@ -160,6 +160,7 @@ LOGGING = {
 # - paloma
 
 INSTALLED_APPS +=('paloma',)  #: this project.
+BOUNCE_HANDLER_ASYNC=False             #: Deafult=True
 
 # - mandb for MySQL command shortcuts
 

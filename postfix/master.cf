@@ -110,7 +110,7 @@ mailman   unix  -       n       n       -       -       pipe
 # - mailjail
 #
 paloma unix  -       n       n       -       -       pipe
-  flags=FDRq user=hdknr argv=/home/hdknr/ve/paloma/src/paloma/postfix/bin/mailjail.py $sender $recipient
+  flags=FDRq user=hdknr argv=/home/hdknr/ve/paloma/bin/paloma_bouncer.py /home/hdknr/ve/paloma/src/paloma/app main $sender $recipient
 jail   unix  -       n       n       -       -       pipe
-  flags=FDRq user=hdknr argv=/home/hdknr/ve/paloma/src/paloma/postfix/bin/mailjail2.py $sender $recipient
+  flags=FDRq user=hdknr argv=/home/hdknr/ve/paloma/bin/paloma_bouncer.py /home/hdknr/ve/paloma/src/paloma/app jail $sender $recipient
 

@@ -11,13 +11,13 @@ Paloma bouncer:
 '''
 if __name__ == '__main__':
     import sys
-    if len(sys.argv) !=  2:
+    if len(sys.argv) < 2:
         sys.stderr.write('you need path of your django application')
         sys.exit(1) 
 
     sys.path.append(sys.argv[1])
     sys.argv[1] = 'bouncer'
-    sys.argv += ['--command','main']
+
     from django.core.management import execute_manager
     import imp
     try:

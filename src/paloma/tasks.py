@@ -42,5 +42,15 @@ def bounce(message_text,*args,**kwawrs):
     except Exception,e:
         print e
 
+@task
+def jail(message_text,*args,**kwawrs):
+    ''' jail worker '''
+    import email  
+    from models import Message
+    try:
+        Message.objects.handle_incomming_mail( email.message_from_string(message_text))
+    except Exception,e:
+        print e
+
 # backwards compat
 SendEmailTask = send_email

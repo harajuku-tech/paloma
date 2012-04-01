@@ -168,7 +168,7 @@ INSTALLED_APPS +=('mandb',)  #:  tools for MySQL
 # - south for data migration
 if 'test' not in sys.argv:
     #: Use south after celery related tables are created.
-#    INSTALLED_APPS +=('south',)  #: for Model Migration
+    INSTALLED_APPS +=('south',)  #: for Model Migration
     pass
 
 # - django-celery for asynchoronous task queue

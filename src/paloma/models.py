@@ -36,18 +36,23 @@ class Domain(models.Model):
 
 class Alias(models.Model):
     ''' Alias  
+        - local user - maildir 
+        - remote user - alias
+
         - for  virtual_alias_maps.cf 
     '''
     address = models.CharField(unique=True, max_length=100)
     ''' 
         - key for virtual_alias_maps.cf 
     '''
-    goto = models.CharField(max_length=100,null=True,default=None,blank=True)
+    alias = models.CharField(max_length=100,null=True,default=None,blank=True)
     '''
         - value for virtual_alias_maps.cf  
     '''
-    maildir= models.CharField(max_length=100,null=True,default=None,blank=True)
+    mailbox = models.CharField(u'Mailbox',max_length=100,null=True,default=None,blank=True,
+                            help_text=u'specify Maildir path if address is local user ')
     '''
+        - for local usr
         - value for virtual_alias_maps.cf  
     '''
     created = models.DateTimeField(default=datetime.now)

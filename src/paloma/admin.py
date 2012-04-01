@@ -2,6 +2,17 @@
 from django.contrib import admin
 from models import *
 
+### Domain 
+class DomainAdmin(admin.ModelAdmin):
+    list_display=tuple([f.name for f in Domain._meta.fields ])
+admin.site.register(Domain,DomainAdmin)
+
+### Alias 
+class AliasAdmin(admin.ModelAdmin):
+    list_display=tuple([f.name for f in Alias._meta.fields ])
+admin.site.register(Alias,AliasAdmin)
+
+
 ### Owner 
 class OwnerAdmin(admin.ModelAdmin):
     list_display=('name','user','domain','forward_to',)

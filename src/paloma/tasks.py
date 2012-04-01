@@ -33,24 +33,27 @@ def send_email(message, **kwargs):
         send_email.retry(exc=e)
 
 @task
-def bounce(message_text,*args,**kwawrs):
+def bounce(sender,receipient,text,is_jailed=False,*args,**kwawrs):
     ''' bounce worker '''
     import email  
-    from models import Message
+    from models import Journal
+
+    journal=None
     try:
-        Message.objects.handle_incomming_mail( email.message_from_string(message_text))
+        journal=Journal( 
+            sender=sender,
+            receipient=receipient,
+            is_jailed=is_jailed,
+            text=text)
+        journal.save()
     except Exception,e:
         print e
 
-@task
-def jail(message_text,*args,**kwawrs):
-    ''' jail worker '''
-    import email  
-    from models import Message
-    try:
-        Message.objects.handle_incomming_mail( email.message_from_string(message_text))
-    except Exception,e:
-        print e
+    if is_jailed == False:
+        try:
+            print "TODO:class incomming mail handler" 
+        except Exception,e:
+            print e
 
 # backwards compat
 SendEmailTask = send_email

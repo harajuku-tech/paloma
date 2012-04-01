@@ -1,10 +1,9 @@
 Jail handler is being implemented.
 ==================================================
 
-- src/paloma/admin.py : show Jail modesl
-- src/paloma/task.py  : create Jail insntace 
-- src/paloma/managemnet/commands/bounce.py : jail handler  
-- postfix/master.cf :  jail handler, bounce handler  
 
-- test : synchronous bounce handler , jail handler
+*- test : synchronous bounce handler , jail handler
 - test : asynchronous bounce handler , jail handler
+
+- paloma log configurable facility 
+- 

@@ -186,7 +186,7 @@ class Schedule(models.Model):
     
 class MessageManager(models.Manager):
     ''' Message Manager'''
-    def handle_incomming_mail(self,mssage ):
+    def handle_incomming_mail(self,sender,receipent,mssage ):
         ''' 
             :param mesage: :py:class:`email.Message`
         ''' 
@@ -234,11 +234,15 @@ class Message(models.Model):
 
     objects = MessageManager()
 
+class JournalManager(models.Manager):
+    ''' Message Manager'''
+    def handle_incomming_mail(self,sender,is_jailed,receipent,mssage ):
+        ''' 
+            :param mesage: :py:class:`email.Message`
+        '''
 
-class Jail(models.Model):
-    ''' Jail Message 
-
-        - mainly used for testing
+class Journal(models.Model):
+    ''' Raw Message
 
     '''
     sender= models.CharField(u'Sender',max_length=100)
@@ -249,3 +253,6 @@ class Jail(models.Model):
 
     text = models.TextField(u'Message Text',default=None,blank=True,null=True)
     ''' Message text '''
+
+    is_jailed = models.BooleanField(u'Jailed Message',default=False )
+

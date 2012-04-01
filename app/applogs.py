@@ -37,7 +37,7 @@ def config(LOGGING):
         'class':    'logging.handlers.TimedRotatingFileHandler', 
         'formatter':'parsefriendly',
         'when':     'midnight',
-        'filename': os.environ.get('APP_LOGGER_FILE','app.log'),
+        'filename': os.environ.get('APP_LOGGER_FILE','/tmp/app.log'),
     }
 
     #  customer logger (dev)

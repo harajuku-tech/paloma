@@ -28,14 +28,18 @@ class Command(GenericCommand):
             print "no stdin...."
             return
 
+        is_jailed = options.get('is_jailed',False)
+
         from paloma.tasks import bounce 
         if getattr(settings,'BOUNCE_HANDLER_ASYNC',True) and options.get('async',True ) :
             #: defualt is async
             print "celeryed"
-            bounce.delay(''.join(sys.stdin.read()) ) #:message queuing
+            bounce.delay(args[1],args[2],''.join(sys.stdin.read()),is_jailed ) #:message queuing
         else:
-            bounce(''.join(sys.stdin.read()) ) #: synchronous call for testing
+            print "sync call"
+            bounce(args[1],args[2],''.join(sys.stdin.read()),is_jailed ) #: synchronous call for testing
 
     def handle_jail(self,*args,**options):
-        ''' jail handler'''
-        print "jailed" 
+        ''' jail'''
+        options['is_jailed'] = True
+        self.handle_main(*args,**options)

@@ -45,13 +45,13 @@ inet_interfaces = all
 # - captured this mail server transaport 
 #
 local_transport = local
-transport_maps = proxy:mysql:/etc/postfix/virtual/mysql/virtual_transport_maps.cf
-virtual_transport = proxy:mysql:/etc/postfix/virtual/mysql/virtual_transport_maps.cf
-virtual_alias_maps = proxy:mysql:/etc/postfix/virtual/mysql/virtual_alias_maps.cf
+transport_maps = proxy:mysql:/etc/postfix/virtual/mysql/transport.cf
+virtual_transport = proxy:mysql:/etc/postfix/virtual/mysql/transport.cf
+virtual_alias_maps = proxy:mysql:/etc/postfix/virtual/mysql/alias.cf
 virtual_alias_domains = $virtual_alias_maps
-virtual_mailbox_domains = proxy:mysql:/etc/postfix/virtual/mysql/virtual_domains_maps.cf
-virtual_mailbox_maps = proxy:mysql:/etc/postfix/virtual/mysql/virtual_mailbox_maps.cf
-virtual_mailbox_base=/home/mbox/user
+virtual_mailbox_domains = proxy:mysql:/etc/postfix/virtual/mysql/domain.cf
+virtual_mailbox_maps = proxy:mysql:/etc/postfix/virtual/mysql/mailbox.cf
+virtual_mailbox_base=/home/hdknr/ve/paloma/src/paloma/postfix/mbox
 virtual_minimum_uid = 10000
 virtual_uid_maps = static:10000
 virtual_gid_maps = static:10000
@@ -67,4 +67,4 @@ disable_dns_lookups = yes
 
 # - other domain goes to  this transapor in master.cf
 #
-default_transport = mailjail2
+default_transport = jail

@@ -107,9 +107,10 @@ mailman   unix  -       n       n       -       -       pipe
   flags=FR user=list argv=/usr/lib/mailman/bin/postfix-to-mailman.py
   ${nexthop} ${user}
 
-# mailjail
-mailjail  unix  -       n       n       -       -       pipe
-  flags=FDRq user=noten argv=/home/noten/bin/mailjail.py $sender $recipient
-mailjail2 unix  -       n       n       -       -       pipe
-  flags=FDRq user=noten argv=/home/noten/bin/mailjail2.py $sender $recipient
+# - mailjail
+#
+paloma unix  -       n       n       -       -       pipe
+  flags=FDRq user=hdknr argv=/home/hdknr/ve/paloma/src/paloma/postfix/bin/mailjail.py $sender $recipient
+jail   unix  -       n       n       -       -       pipe
+  flags=FDRq user=hdknr argv=/home/hdknr/ve/paloma/src/paloma/postfix/bin/mailjail2.py $sender $recipient
 

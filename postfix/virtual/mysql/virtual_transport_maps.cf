@@ -1,5 +1,0 @@
-user = postfix
-password = postfix
-hosts = localhost
-dbname = postfix
-query = SELECT transport FROM domain WHERE domain='%s'

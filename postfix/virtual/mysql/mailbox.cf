@@ -1,0 +1,5 @@
+user = paloma
+password = paloma
+hosts = localhost
+dbname = paloma
+query = SELECT maildir FROM paloma_alias WHERE username='%s' and maildir is not null

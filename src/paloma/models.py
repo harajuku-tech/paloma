@@ -9,6 +9,53 @@ from django.core.urlresolvers import reverse
 from datetime import datetime,timedelta
 import sys,traceback
 
+class Domain(models.Model):
+    ''' Domain
+
+        -  virtual_transport_maps.cf 
+    '''
+    domain = models.CharField(u'Domain',unique=True, max_length=100,db_index=True, )
+    ''' Domain 
+
+        -  key for virtual_transport_maps.cf 
+        -  key and return value for  virtual_domains_maps.cf
+    '''
+    description = models.CharField(u'Description',max_length=200,default='')
+    maxquota = models.BigIntegerField(null=True,blank=True,default=None)
+    quota = models.BigIntegerField(null=True,blank=True,default=None)
+    transport = models.CharField(max_length=765)
+    '''  
+        - virtual_transport_maps.cf   looks this for specified **domain**.
+    '''
+
+    backupmx = models.IntegerField(null=True,blank=True,default=None)
+    active = models.BooleanField(default=True)
+    class Meta:
+        verbose_name=u'Domain'
+        verbose_name_plural=u'Domains'
+
+class Alias(models.Model):
+    ''' Alias  
+        - for  virtual_alias_maps.cf 
+    '''
+    address = models.CharField(unique=True, max_length=100)
+    ''' 
+        - key for virtual_alias_maps.cf 
+    '''
+    goto = models.CharField(max_length=100,null=True,default=None,blank=True)
+    '''
+        - value for virtual_alias_maps.cf  
+    '''
+    maildir= models.CharField(max_length=100,null=True,default=None,blank=True)
+    '''
+        - value for virtual_alias_maps.cf  
+    '''
+    created = models.DateTimeField(default=datetime.now)
+    modified = models.DateTimeField()
+    class Meta:
+        pass
+
+# - 
 class AbstractProfile(models.Model):
     ''' Profile meta class'''
     class Meta:
@@ -67,7 +114,8 @@ class Mailbox(models.Model):
     ''' System User '''
 
     address = models.CharField(u'Forward address',max_length=100 )
-    ''' Email Address '''
+    ''' Email Address 
+    '''
 
     is_active = models.BooleanField(u'Actaive status',default=False )
     ''' Active Status '''

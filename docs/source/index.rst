@@ -11,8 +11,9 @@ Contents:
 .. toctree::
     :maxdepth: 2
 
+    postfix
     note
-
+    terms
 
 Indices and tables
 ==================

@@ -1,0 +1,15 @@
+[
+  {
+    "pk": 1, 
+    "model": "paloma.domain", 
+    "fields": {
+      "domain": "paloma.deb", 
+      "description": "paloma", 
+      "maxquota": null, 
+      "quota": null, 
+      "active": true, 
+      "backupmx": null, 
+      "transport": "paloma"
+    }
+  }
+]

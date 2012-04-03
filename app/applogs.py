@@ -29,6 +29,7 @@ def config(LOGGING):
     LOGGING['handlers']['console'] = { 
         'level':    'DEBUG',
         'class':    'logging.StreamHandler',
+        'formatter':'parsefriendly',
     }
 
     #  customer handler (file)
@@ -56,6 +57,23 @@ def config(LOGGING):
         'propagete':    True,
     }
 
+    # - paloma logging handler -----
+
+    LOGGING['handlers']['paloma'] = { 
+        'level':    'DEBUG',
+        'class':    'logging.handlers.TimedRotatingFileHandler', 
+        'formatter':'parsefriendly',
+        'when':     'midnight',
+        'filename': os.environ.get('PALOMA_LOGGER_FILE','/tmp/paloma.log'),
+    }
+
+    LOGGING['loggers']['paloma'] = { 
+        'handlers': ['paloma'],
+#        'level':    'WARNING', 
+        'level':    'DEBUG', 
+        'propagete':    True,
+    }
+
 def get_logger():
     ''' application logger 
     >>> import applogs
@@ -64,7 +82,7 @@ def get_logger():
     '''
     # - Python logging api 
     import logging
-    return  logging.getLogger(os.environ.get('APP_LOGGER','dev'))
+    return  logging.getLogger(os.environ.get('APP_LOGGER','live'))
 
 def report(exception,level='error'):
     ''' exception report utility

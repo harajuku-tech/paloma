@@ -22,10 +22,11 @@ class Command(GenericCommand):
 
     def handle_main(self,*args,**options):
         ''' main '''
+        from paloma import report 
         import sys
         if sys.stdin.isatty():
             #: no stdin
-            print "no stdin...."
+            report('no stdin')
             return
 
         is_jailed = options.get('is_jailed',False)
@@ -33,13 +34,15 @@ class Command(GenericCommand):
         from paloma.tasks import bounce 
         if getattr(settings,'BOUNCE_HANDLER_ASYNC',True) and options.get('async',True ) :
             #: defualt is async
-            print "celeryed"
+            report('celeryd')
             bounce.delay(args[1],args[2],''.join(sys.stdin.read()),is_jailed ) #:message queuing
         else:
-            print "sync call"
+            report('synced call')
             bounce(args[1],args[2],''.join(sys.stdin.read()),is_jailed ) #: synchronous call for testing
 
     def handle_jail(self,*args,**options):
         ''' jail'''
+        from paloma import report 
+        report('jailed')
         options['is_jailed'] = True
         self.handle_main(*args,**options)

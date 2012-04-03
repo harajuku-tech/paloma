@@ -1,9 +1,8 @@
 Jail handler is being implemented.
 ==================================================
 
+- bouncer MUST synchronously write to Journal ,then optionaly asynchonosly trigger mail processing.
+- accounts system for sign up mail handler
 
-*- test : synchronous bounce handler , jail handler
-- test : asynchronous bounce handler , jail handler
-
-- paloma log configurable facility 
-- 
+Multiple Celery Backends
+---------------------------

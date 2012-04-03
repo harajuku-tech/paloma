@@ -8,3 +8,4 @@ dist
 src/paloma.egg-info
 run
 app.log*
+

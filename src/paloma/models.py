@@ -186,7 +186,7 @@ class Schedule(models.Model):
     
 class MessageManager(models.Manager):
     ''' Message Manager'''
-    def handle_incomming_mail(self,sender,receipent,mssage ):
+    def handle_incomming_mail(self,sender,recipient,mssage ):
         ''' 
             :param mesage: :py:class:`email.Message`
         ''' 
@@ -236,7 +236,7 @@ class Message(models.Model):
 
 class JournalManager(models.Manager):
     ''' Message Manager'''
-    def handle_incomming_mail(self,sender,is_jailed,receipent,mssage ):
+    def handle_incomming_mail(self,sender,is_jailed,recipient,mssage ):
         ''' 
             :param mesage: :py:class:`email.Message`
         '''
@@ -248,8 +248,8 @@ class Journal(models.Model):
     sender= models.CharField(u'Sender',max_length=100)
     ''' sender '''
     
-    receipient= models.CharField(u'Receipient',max_length=100)
-    ''' receipient '''
+    recipient= models.CharField(u'Receipient',max_length=100)
+    ''' recipient '''
 
     text = models.TextField(u'Message Text',default=None,blank=True,null=True)
     ''' Message text '''

@@ -33,7 +33,7 @@ def send_email(message, **kwargs):
         send_email.retry(exc=e)
 
 @task
-def bounce(sender,receipient,text,is_jailed=False,*args,**kwawrs):
+def bounce(sender,recipient,text,is_jailed=False,*args,**kwawrs):
     ''' bounce worker '''
     import email  
     from models import Journal
@@ -42,7 +42,7 @@ def bounce(sender,receipient,text,is_jailed=False,*args,**kwawrs):
     try:
         journal=Journal( 
             sender=sender,
-            receipient=receipient,
+            recipient=recipient,
             is_jailed=is_jailed,
             text=text)
         journal.save()

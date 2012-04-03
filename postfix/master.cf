@@ -107,8 +107,18 @@ mailman   unix  -       n       n       -       -       pipe
   flags=FR user=list argv=/usr/lib/mailman/bin/postfix-to-mailman.py
   ${nexthop} ${user}
 
-# - mailjail
+# - paloma configuration
+# 
+#   - paloma : main bounce handler
+#   - jail   : test handler 
 #
+#   COMMAND SYNTAX::
+#       {{FULL PATH to paloma_bouncer.py}} {{FULL  PATH to paloma based django application}} {{SWITCH}} {{SENDER}} {{RECIPIENT}}
+#      
+#       {{SWITCH}} 
+#               - main      : main bounce  
+#               - jail      : test bounce
+#       
 paloma unix  -       n       n       -       -       pipe
   flags=FDRq user=hdknr argv=/home/hdknr/ve/paloma/bin/paloma_bouncer.py /home/hdknr/ve/paloma/src/paloma/app main $sender $recipient
 jail   unix  -       n       n       -       -       pipe

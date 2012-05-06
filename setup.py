@@ -97,4 +97,5 @@ if __name__=='__main__':
         include_package_data = True,
         zip_safe = False,
         scripts=SCRIPTS,
+        install_requires = INSTALL_REQUIRES,
     )

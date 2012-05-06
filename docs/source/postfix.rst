@@ -2,6 +2,13 @@
 Postfix Configuration
 ========================
 
+MySQL bound postfix
+=========================
+
+Install MySQL bound postfix. For Debian Linux ::
+
+    $ sudo aptitude install postfix-mysql
+
 Paloma application initialization
 ================================================
 
@@ -21,6 +28,9 @@ Postfix MySQL virtual configutaiton of this sample uses the application database
 ========================================================
 
 For quick, copy your original Postfix configuation to backup , ::
+
+    $ sudo mv main.cf main.cf.dist
+    $ sudo mv master.cf master.cf.dist
 
     -rw-r--r-- 1 root root 1239 2012-03-04 16:21 main.cf.dist
     -rw-r--r-- 1 root root 5301 2012-03-04 16:21 master.cf.dist
@@ -81,6 +91,24 @@ Add a Domain
 Send a test mail
 ==================
 
+Restart postfix
+------------------
+
+::
+
+    $ sudo /etc/init.d/postfix restart
+
+    Stopping Postfix Mail Transport Agent: postfix.
+    Starting Postfix Mail Transport Agent: postfix.
+    (tact)hdknr@sparrow:/etc/postfix$ sudo tail -f /var/log/mail.log 
+    May  7 03:59:18 sparrow postfix/master[9689]: daemon started -- version 2.7.1, configuration /etc/postfix
+    May  7 04:08:14 sparrow postfix/master[9689]: terminating on signal 15
+    May  7 04:08:14 sparrow postfix/master[10661]: daemon started -- version 2.7.1, configuration /etc/postfix
+
+
+sample mail
+------------------------------
+
 All mails to **paloma.deb** domain and other domain are captured by paloma_bouncer.py and saved in Journal model table.
 
 send ::
@@ -105,6 +133,7 @@ mail log ::
 
 Journal ::
 
-    >>> from paloma.models import Journal                                                                                                                    >>> print map(lambda j : (j.sender,j.receipient,j.is_jailed), Journal.objects.all() )                                                                        
+    >>> from paloma.models import Journal
+    >>> print map(lambda j : (j.sender,j.receipient,j.is_jailed), Journal.objects.all() )
     [(u'hdknr@paloma.localhost', u'user1@hdknr.deb', True), (u'hdknr@paloma.localhost', u'user1@paloma.deb', False)]
 

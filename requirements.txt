@@ -6,3 +6,4 @@ django-celery
 django-kombu
 kombu
 south
+django_extensions

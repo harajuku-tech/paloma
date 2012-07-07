@@ -19,7 +19,7 @@ Postfix MySQL virtual configutaiton of this sample uses the application database
 
 ::
 
-    $ python manage.py syncdb
+    $ python ../manage.py syncdb
 
 - run migrate if required becase the sample app depends on :term:`south` migration tool.
 

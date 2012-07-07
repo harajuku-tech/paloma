@@ -1,5 +1,8 @@
 # Django settings for example project.
-
+import sys,os
+#
+PROJECT_DIR=os.path.dirname( os.path.abspath(__file__))
+#
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 
@@ -11,10 +14,19 @@ MANAGERS = ADMINS
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
-        'NAME': '',                      # Or path to database file if using sqlite3.
-        'USER': '',                      # Not used with sqlite3.
-        'PASSWORD': '',                  # Not used with sqlite3.
+        'ENGINE': 'django.db.backends.mysql', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
+        'NAME': 'paloma',                      # Or path to database file if using sqlite3.
+        'USER': 'paloma',                      # Not used with sqlite3.
+        'PASSWORD': 'paloma',                  # Not used with sqlite3.
+        'HOST': '',                      # Set to empty string for localhost. Not used with sqlite3.
+        'PORT': '',                      # Set to empty string for default. Not used with sqlite3.
+    }
+    #:- this secondary database is for postfix-mysql 
+    ,'postfix': {
+        'ENGINE': 'django.db.backends.mysql', # Add 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
+        'NAME': 'postfix',                      # Or path to database file if using sqlite3.
+        'USER': 'postfix',                      # Not used with sqlite3.
+        'PASSWORD': 'postfix',                  # Not used with sqlite3.
         'HOST': '',                      # Set to empty string for localhost. Not used with sqlite3.
         'PORT': '',                      # Set to empty string for default. Not used with sqlite3.
     }
@@ -27,11 +39,11 @@ DATABASES = {
 # timezone as the operating system.
 # If running in a Windows environment this must be set to the same as your
 # system time zone.
-TIME_ZONE = 'America/Chicago'
+TIME_ZONE = 'Asia/Tokyo'
 
 # Language code for this installation. All choices can be found here:
 # http://www.i18nguy.com/unicode/language-identifiers.html
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'js-jp'
 
 SITE_ID = 1
 
@@ -70,9 +82,12 @@ STATICFILES_DIRS = (
     # Put strings here, like "/home/html/static" or "C:/www/django/static".
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
+    os.path.join(PROJECT_DIR,'static'),
+
 )
 
 # List of finder classes that know how to find static files in
+
 # various locations.
 STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.FileSystemFinder',
@@ -119,7 +134,7 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     # Uncomment the next line to enable the admin:
-    # 'django.contrib.admin',
+    'django.contrib.admin',
     # Uncomment the next line to enable admin documentation:
     # 'django.contrib.admindocs',
 )
@@ -152,3 +167,48 @@ LOGGING = {
         },
     }
 }
+
+########
+
+# ---- Custom Configuration 
+
+# - paloma
+
+INSTALLED_APPS +=('paloma',)  #: this project.
+BOUNCE_HANDLER_ASYNC=False    #: Deafult=True, False is for mainly developemnt
+
+# - mandb for MySQL command shortcuts
+
+INSTALLED_APPS +=('mandb',)  #:  tools for MySQL
+
+# - south for data migration
+if 'test' not in sys.argv:
+    #: Use south after celery related tables are created.
+    INSTALLED_APPS +=('south',)  #: for Model Migration
+    pass
+
+# - django-celery for asynchoronous task queue
+
+INSTALLED_APPS += ('djcelery',) #'djkombu',)
+BROKER_URL="django://"
+#CELERY_ALWAYS_EAGER = True
+import djcelery
+djcelery.setup_loader()
+
+# - paloma for mail transfer agents
+EMAIL_BACKEND = 'paloma.backends.CeleryEmailBackend'
+PALOMA_EMAIL_BACKEND = 'django.core.mail.backends.locmem.EmailBackend'
+#CELERY_EMAIL_TASK_CONFIG = {
+#    'queue' : 'django_email',
+#    'delivery_mode' : 1, # non persistent
+#    'rate_limit' : '50/m', # 50 emails per minute
+#}
+
+# -- django-extensinon
+
+INSTALLED_APPS +=('django_extensions',)  #:  tools for django-extensions
+
+# - logging
+import applogs
+applogs.config(LOGGING)
+

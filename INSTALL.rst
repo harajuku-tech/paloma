@@ -3,7 +3,7 @@
 ========================================================================
 
 This section contains information about 
-how to download and install **paloma ** in your system. 
+how to download and install **paloma** in your system. 
 It also contains brief instructions about how
 to build the included documentation.
 
@@ -25,9 +25,9 @@ if they are not already installed in your system.
 Soruce
 ========
 
-Got to Bitubucket.org.
+Clone from Github.
 
-URL is https://bitbucket.org/hdknr/paloma
+URL is https://github.com/harajuku-tech/paloma
 
 
 Install
@@ -41,7 +41,7 @@ To install **paloma** from soruce code, use the provided installation script::
 Or it is also possible to install this application directly from
 the `source code repository`_ using ``pip``::
 
-    pip install -e hg+https://bitbucket.org/hdknr/paloma
+    pip install -e git+https://github.org/harajuku-tech/paloma#egg=paloma
 
 The above command will install the latest development release of **paloma**.
 

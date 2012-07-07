@@ -74,9 +74,9 @@ if __name__=='__main__':
         author_email = 'gmail [at] hdknr.com',
         maintainer = 'Hideki Nara',
         maintainer_email = 'gmail [at] hdknr.com',
-        url = 'https://bitbucket.org/hdknr/paloma',
+        url = 'https://github.com/harajuku-tech/paloma',
         description = 'paloma is a mail sender.',
-        long_description = read('README'),
+        long_description = read('README.rst'),
         download_url = 'https://github.com/harajuku-tech/paloma',
         platforms=['any'],
         classifiers = [

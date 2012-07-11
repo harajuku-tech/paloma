@@ -189,7 +189,7 @@ if 'test' not in sys.argv:
 
 # - django-celery for asynchoronous task queue
 
-INSTALLED_APPS += ('djcelery',) #'djkombu',)
+INSTALLED_APPS += ('djcelery','djkombu',)
 BROKER_URL="django://"
 #CELERY_ALWAYS_EAGER = True
 import djcelery

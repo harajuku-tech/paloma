@@ -11,17 +11,15 @@ LOG_LEVEL="DEBUG"
 
 ####
 def configure(args):
-    if len(args) < 3:
-        return []
 
-    if  args[2] == "start" :
+    if  len(args) < 3 or args[2] == "start" :
         return [ args[0], "celeryd",
                 "--loglevel" , LOG_LEVEL,
                 "--pidfile" , PID_FILE, 
                 "--logfile" , LOG_FILE 
             ]
 
-    if  args[2] == "stop":
+    if  len(args) >2 and args[2] == "stop":
         return [ args[0],"celeryd_multi",
                  "stop",NODE,
                 "--pidfile=%s" % PID_FILE, 

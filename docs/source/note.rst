@@ -5,44 +5,55 @@ Note
 configure worker
 =====================
 
+run.py has configuration parameters for django-celery.
+Define wrapper command argment to run django-celery propery
+
 ::
 
-    (paloma)hdknr@cats:~/ve/paloma/src/paloma$ vi bin/conf.bash 
+    (paloma)hdknr@cats:~/ve/paloma/src/paloma/example/app$ vi run.py
 
 
-specify your virutalenv absolute path to $VE.
+app.run
+----------
+
+app.run.configure is called by paloma_worker.py command.
+
+.. automodule:: app.run
+    :members:
 
 runnsing celery worker
 ====================================
 
+use  bin/paloma.sh which is a command wrapper for paloma_worker.py.
 
-::
+At first configure arguments in paloma.sh.
 
-    ;(paloma)hdknr@cats:~/ve/paloma/src/paloma$ bin/start_celery.bash 
-    ;/home/hdknr/ve/paloma/bin/python
-    ;(paloma)hdknr@cats:~/ve/paloma/src/paloma$ /home/hdknr/ve/paloma/lib/python2.6/site-packages/djcelery/loaders.py:103: UserWarning: Using settings.DEBUG leads to a memory leak, never use this setting in production environments!
-    ;  warnings.warn("Using settings.DEBUG leads to a memory leak, never "
+to run::
 
+    paloma.sh start
 
+to stop::
 
-stopping celery worker
-==============================
+    paloma.sh stop
 
 
-::
+"start" and "stop" are command defined in run.py.
 
-    (paloma)hdknr@cats:~/ve/paloma/src/paloma$ bin/stop_celery.bash 
-    .
-    /home/hdknr/ve/paloma
-    celeryd-multi v2.5.1
-    > Stopping nodes...
-            > celery.cats: TERM -> 19505
 
-    (paloma)hdknr@cats:~/ve/paloma/src/paloma$ bin/stop_celery.bash 
-    .
-    /home/hdknr/ve/paloma
-    celeryd-multi v2.5.1
-    > celery.cats: DOWN
+Run at when Debian Linux is booted.
+=======================================
+
+copy paloma.sh ::
+
+    sudo cp paloma.sh /etc/init.d/paloma
+
+Configure autostart::
+
+    sudo /etc/inid.d/paloma install
+
+Stop autostart ::
+
+    sudo /etc/inid.d/paloma uninstall
 
 
 testing

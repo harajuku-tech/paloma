@@ -37,7 +37,7 @@ class Command(GenericCommand):
             report('celeryd')
             bounce.delay(args[1],args[2],''.join(sys.stdin.read()),is_jailed ) #:message queuing
         else:
-            report('synced call')
+            report('synched call')
             bounce(args[1],args[2],''.join(sys.stdin.read()),is_jailed ) #: synchronous call for testing
 
     def handle_jail(self,*args,**options):

@@ -175,7 +175,6 @@ LOGGING = {
 # - paloma
 
 INSTALLED_APPS +=('paloma',)  #: this project.
-#BOUNCE_HANDLER_ASYNC=False    #: Deafult=True, False is for mainly developemnt
 
 # - mandb for MySQL command shortcuts
 
@@ -190,8 +189,10 @@ if 'test' not in sys.argv:
 # - django-celery for asynchoronous task queue
 
 INSTALLED_APPS += ('djcelery','djkombu',)
+# -- Django Backend
 BROKER_URL="django://"
-#CELERY_ALWAYS_EAGER = True
+#
+#CELERY_ALWAYS_EAGER = True  #:True: synchronous
 import djcelery
 djcelery.setup_loader()
 

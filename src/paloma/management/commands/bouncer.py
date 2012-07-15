@@ -32,13 +32,8 @@ class Command(GenericCommand):
         is_jailed = options.get('is_jailed',False)
 
         from paloma.tasks import bounce 
-        if getattr(settings,'BOUNCE_HANDLER_ASYNC',True) and options.get('async',True ) :
-            #: defualt is async
-            report('celeryd')
-            bounce.delay(args[1],args[2],''.join(sys.stdin.read()),is_jailed ) #:message queuing
-        else:
-            report('synched call')
-            bounce(args[1],args[2],''.join(sys.stdin.read()),is_jailed ) #: synchronous call for testing
+        #: defualt is async
+        bounce.delay(args[1],args[2],''.join(sys.stdin.read()),is_jailed ) #:message queuing
 
     def handle_jail(self,*args,**options):
         ''' jail'''

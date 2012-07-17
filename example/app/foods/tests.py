@@ -1,8 +1,4 @@
 """
-This file demonstrates writing tests using the unittest module. These will pass
-when you run "manage.py test".
-
-Replace this with more appropriate tests for your application.
 """
 
 from django.test import TestCase
@@ -10,8 +6,6 @@ from django.test import TestCase
 from django.conf import settings
 from django.core import mail
 #
-from djcelery_email.tasks import send_email
-
 class ScheduleTests(TestCase):
 
     fixtures=['auth','paloma','foods']
@@ -62,7 +56,7 @@ class DjangoCeleryEmailTests(TestCase):
 #        self.assertEqual(mail.outbox[0].subject, 'mass 1')
 #        self.assertEqual(mail.outbox[1].subject, 'mass 2')
     
-    def test_setting_extra_configs(self):
-        self.assertEqual(send_email.queue, 'django_email')
-        self.assertEqual(send_email.delivery_mode, 1)
-        self.assertEqual(send_email.rate_limit, '50/m')
+#    def test_setting_extra_configs(self):
+#        self.assertEqual(send_email.queue, 'django_email')
+#        self.assertEqual(send_email.delivery_mode, 1)
+#        self.assertEqual(send_email.rate_limit, '50/m')

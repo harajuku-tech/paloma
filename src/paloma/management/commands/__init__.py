@@ -21,6 +21,12 @@ class GenericCommand(BaseCommand):
             default='help',
             help=u'message id'),
 
+        make_option('--file',
+            action='store',
+            dest='file',
+            default='stdin',
+            help=u'flle'),
+
         make_option('--encoding',
             action='store',
             dest='encoding',
@@ -43,7 +49,7 @@ class GenericCommand(BaseCommand):
     def handle(self  ,*args, **options):
         '''  command main '''
 
-        if len(args) < 3 :
+        if len(args) < 1 :
             return "a sub command must be specfied"
         self.command = args[0]
         getattr(self, 'handle_%s'% self.command ,GenericCommand.handle_help)(*args,**options)

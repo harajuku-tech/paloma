@@ -21,15 +21,15 @@ DATABASES = {
         'HOST': '',                      # Set to empty string for localhost. Not used with sqlite3.
         'PORT': '',                      # Set to empty string for default. Not used with sqlite3.
     }
-    #:- this secondary database is for postfix-mysql 
-    ,'postfix': {
-        'ENGINE': 'django.db.backends.mysql', # Add 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
-        'NAME': 'postfix',                      # Or path to database file if using sqlite3.
-        'USER': 'postfix',                      # Not used with sqlite3.
-        'PASSWORD': 'postfix',                  # Not used with sqlite3.
-        'HOST': '',                      # Set to empty string for localhost. Not used with sqlite3.
-        'PORT': '',                      # Set to empty string for default. Not used with sqlite3.
-    }
+#    #:- this secondary database is for postfix-mysql 
+#    ,'postfix': {
+#        'ENGINE': 'django.db.backends.mysql', # Add 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
+#        'NAME': 'postfix',                      # Or path to database file if using sqlite3.
+#        'USER': 'postfix',                      # Not used with sqlite3.
+#        'PASSWORD': 'postfix',                  # Not used with sqlite3.
+#        'HOST': '',                      # Set to empty string for localhost. Not used with sqlite3.
+#        'PORT': '',                      # Set to empty string for default. Not used with sqlite3.
+#    }
 }
 
 # Local time zone for this installation. Choices can be found here:
@@ -193,6 +193,9 @@ INSTALLED_APPS += ('djcelery','djkombu',)
 BROKER_URL="django://"
 #
 #CELERY_ALWAYS_EAGER = True  #:True: synchronous
+#CELERY_TASK_SERIALIZER='json'
+CELERY_TASK_SERIALIZER='pickle'
+#
 import djcelery
 djcelery.setup_loader()
 

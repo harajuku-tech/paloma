@@ -8,29 +8,26 @@ import commands
 import os
 
 from paloma.management.commands import GenericCommand
+from paloma.models import Schedule 
 
 class Command(GenericCommand):
-    ''' paloma maile management
+    ''' paloma schedule management
     '''
     args = ''
     help = ''
+    model= Schedule
 
     option_list = GenericCommand.option_list + (
-
-        make_option('--command',
-            action='store',
-            dest='command',
-            default='help',
-            help=u'sub command'),
         )
-    ''' Command Option '''
 
     def handle_enqueue(self,*args,**options):
-        '''　enqueue
+        '''　enqueue messages from schedules
 
         '''
+
         if options['id'].isdigit():
             print "Specified Schedule" , options['id']
         else:
-            print "All Schedule"
+            for s in Schedule.objects.all(): 
+                s.generate_messages()
 

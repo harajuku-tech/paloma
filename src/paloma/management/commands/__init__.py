@@ -12,6 +12,7 @@ class GenericCommand(BaseCommand):
     '''
     args = ''
     help = ''
+    model=None
 
     option_list = BaseCommand.option_list + (
 
@@ -35,6 +36,9 @@ class GenericCommand(BaseCommand):
         )
     ''' Command Option '''
 
+    def handle_count(self,*args,**option):
+        if self.model:
+            print self.model,self.model.objects.count()
         
     def handle_help(self,*args,**options):
         '''  help

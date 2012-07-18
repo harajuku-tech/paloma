@@ -17,7 +17,7 @@ BACKEND = getattr(settings, 'CELERY_EMAIL_BACKEND',
 #
 
 #@task(**TASK_CONFIG)
-@task
+@task(serializer='pickle')
 def send_email(message, **kwargs):
     try:
         logger = send_email.get_logger()
@@ -54,10 +54,11 @@ def bounce(sender,recipient,text,is_jailed=False,*args,**kwawrs):
             print "TODO:class incomming mail handler" 
         except Exception,e:
             print e
+
 @task
 def enqueue_schedule(sender,id=None):
     ''' enqueue specifid mail schedule '''
-    Schedule.objects.enqueue_messages(id)
+    Schedule.objects.enqueue_messages(id )
 
 # backwards compat
 SendEmailTask = send_email

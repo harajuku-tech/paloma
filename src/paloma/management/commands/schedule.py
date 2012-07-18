@@ -29,4 +29,6 @@ class Command(GenericCommand):
         if options['sync']:
             Schedule.objects.enqueue_messages( options['id'] )
         else:
-            enqueue_schedule.delay(options['id'])
+#            enqueue_schedule.delay(options['id'])
+#            enqueue_schedule.apply_async(options['id'],serializer='yaml')
+            enqueue_schedule.apply_async(options['id'],serializer='msgpack')

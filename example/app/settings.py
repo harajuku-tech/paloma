@@ -192,7 +192,7 @@ INSTALLED_APPS += ('djcelery','djkombu',)
 # -- Django Backend
 BROKER_URL="django://"
 #
-CELERY_ALWAYS_EAGER = True  #:True: synchronous
+#CELERY_ALWAYS_EAGER = True  #:True: synchronous
 #CELERY_TASK_SERIALIZER='json'
 CELERY_TASK_SERIALIZER='pickle'
 #

@@ -9,6 +9,7 @@ import os
 
 from paloma.management.commands import GenericCommand
 from paloma.models import Schedule 
+from paloma.tasks import enqueue_schedule
 
 class Command(GenericCommand):
     ''' paloma schedule management
@@ -25,9 +26,7 @@ class Command(GenericCommand):
 
         '''
 
-        if options['id'].isdigit():
-            print "Specified Schedule" , options['id']
+        if options['sync']:
+            Schedule.objects.enqueue_messages( options['id'] )
         else:
-            for s in Schedule.objects.all(): 
-                s.generate_messages()
-
+            enqueue_schedule.delay(options['id'])

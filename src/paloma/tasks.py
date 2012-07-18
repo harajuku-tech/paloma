@@ -3,6 +3,7 @@ from django.core.mail import get_connection
 
 from celery.task import task
 
+from paloma.models import Schedule
 
 CONFIG = getattr(settings, 'CELERY_EMAIL_TASK_CONFIG', {})
 BACKEND = getattr(settings, 'CELERY_EMAIL_BACKEND',
@@ -53,6 +54,10 @@ def bounce(sender,recipient,text,is_jailed=False,*args,**kwawrs):
             print "TODO:class incomming mail handler" 
         except Exception,e:
             print e
+@task
+def enqueue_schedule(sender,id=None):
+    ''' enqueue specifid mail schedule '''
+    Schedule.objects.enqueue_messages(id)
 
 # backwards compat
 SendEmailTask = send_email

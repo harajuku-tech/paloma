@@ -25,7 +25,7 @@ class Command(GenericCommand):
         '''　remove messages
 
         '''
-        if options['id'].isdigit():
+        if options['id'] and options['id'].isdigit():
             try:
                 Message.objects.get(id=options['id']).delete()
             except Exception,e:

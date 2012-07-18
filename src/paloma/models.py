@@ -135,6 +135,21 @@ class Mailbox(models.Model):
     def __unicode__(self):
        return self.user.__unicode__() + "(%s)"% self.address 
 
+class ScheduleManager(models.Manager):
+    ''' Schedule Manager '''
+
+    def enqueue_messages(self,id=None):
+        ''' enqueue_messages
+
+            :param id: Schedule id
+        ''' 
+        args={}
+        if id !=None:
+            args['id'] = id
+
+        for s in self.filter(): 
+            s.generate_messages()
+
 class Schedule(models.Model):
     ''' Message Delivery Schedule'''
 
@@ -156,6 +171,7 @@ class Schedule(models.Model):
     forward_to= models.CharField(u'Forward address',max_length=100 ,default=None,null=True,blank=True)
     ''' Forward address for incomming email '''
 
+    objects = ScheduleManager()
     #: TODO : other management
     #: TODO:  Filtering 
 

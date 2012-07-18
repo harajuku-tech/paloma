@@ -19,8 +19,14 @@ class GenericCommand(BaseCommand):
         make_option('--id',
             action='store',
             dest='id',
-            default='help',
+            default=None,
             help=u'message id'),
+
+        make_option('-s','--sync',
+            action='store_true',
+            dest='sync',
+            default=False,
+            help=u'Synchronous Call'),
 
         make_option('--file',
             action='store',
@@ -49,6 +55,8 @@ class GenericCommand(BaseCommand):
             if m == None:
                 continue
             print m.group(1)
+        print args
+        print options
 
     def handle(self  ,*args, **options):
         '''  command main '''

@@ -22,7 +22,8 @@ def configure(args):
         return [ args[0], "celeryd",
                 "--loglevel" , LOG_LEVEL,
                 "--pidfile" , PID_FILE, 
-                "--logfile" , LOG_FILE 
+                "--logfile" , LOG_FILE ,
+                "-E",                       # event option
             ]
 
     if  len(args) >2 and args[2] == "stop":

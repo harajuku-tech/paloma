@@ -190,7 +190,8 @@ if 'test' not in sys.argv:
 
 INSTALLED_APPS += ('djcelery','djkombu',)
 # -- Django Backend
-BROKER_URL="django://"
+#BROKER_URL="django://"
+BROKER_URL = 'amqp://guest:guest@localhost:5672//'
 #
 #CELERY_ALWAYS_EAGER = True  #:True: synchronous
 #CELERY_TASK_SERIALIZER='json'

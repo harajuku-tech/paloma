@@ -34,6 +34,14 @@ Owner
 .. autoclass:: paloma.models.Owner
     :members:
 
+.. _paloma.models.Operator:
+
+Operator
+--------
+
+.. autoclass:: paloma.models.Operator
+    :members:
+
 .. _paloma.models.Group:
 
 Group

@@ -43,6 +43,11 @@ class OwnerAdmin(admin.ModelAdmin):
     list_display=('name','user','domain','forward_to',)
 admin.site.register(Owner,OwnerAdmin)
 
+### Operator 
+class OperatorAdmin(admin.ModelAdmin):
+    list_display=('owner','user', )
+admin.site.register(Operator,OperatorAdmin)
+
 ### Group 
 class GroupAdmin(admin.ModelAdmin):
     list_display=('name','owner','symbol','main_address')

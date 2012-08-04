@@ -68,7 +68,7 @@ class AbstractProfile(models.Model):
         abstract=True
 
 class Owner(models.Model):
-    ''' Group Owner
+    ''' Groups Owner
     '''
     user= models.ForeignKey(User,verbose_name=u'System User' )
     ''' System User '''
@@ -84,6 +84,18 @@ class Owner(models.Model):
 
     def __unicode__(self):
         return self.user.__unicode__() + "@%s"%self.domain
+
+class Operator(models.Model):
+    ''' Operator
+    '''
+    owner= models.ForeignKey(Owner,verbose_name=u'Operator Owner' )
+    ''' Operator Owner '''
+
+    user= models.ForeignKey(User,verbose_name=u'System User' )
+    ''' System User '''
+
+    def __unicode__(self):
+        return self.user.__unicode__() + "@%s"%self.owner.domain
 
 class Group(models.Model):
     ''' Group

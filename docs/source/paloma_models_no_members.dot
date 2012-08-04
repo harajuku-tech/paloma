@@ -35,6 +35,14 @@
     
     </TABLE>
     >]
+    paloma_models_Operator [label=<
+    <TABLE BGCOLOR="palegoldenrod" BORDER="0" CELLBORDER="0" CELLSPACING="0">
+     <TR><TD COLSPAN="2" CELLPADDING="4" ALIGN="CENTER" BGCOLOR="olivedrab4"
+     ><FONT FACE="Helvetica Bold" COLOR="white"
+     >Operator</FONT></TD></TR>
+    
+    </TABLE>
+    >]
     paloma_models_Group [label=<
     <TABLE BGCOLOR="palegoldenrod" BORDER="0" CELLBORDER="0" CELLSPACING="0">
      <TR><TD COLSPAN="2" CELLPADDING="4" ALIGN="CENTER" BGCOLOR="olivedrab4"
@@ -89,6 +97,23 @@
   
   paloma_models_Owner -> django_contrib_auth_models_User
   [label="user (owner)"] [arrowhead=none, arrowtail=dot];
+  
+  
+  
+  paloma_models_Operator -> paloma_models_Owner
+  [label="owner (operator)"] [arrowhead=none, arrowtail=dot];
+  
+  
+  django_contrib_auth_models_User [label=<
+      <TABLE BGCOLOR="palegoldenrod" BORDER="0" CELLBORDER="0" CELLSPACING="0">
+      <TR><TD COLSPAN="2" CELLPADDING="4" ALIGN="CENTER" BGCOLOR="olivedrab4"
+      ><FONT FACE="Helvetica Bold" COLOR="white"
+      >User</FONT></TD></TR>
+      </TABLE>
+      >]
+  
+  paloma_models_Operator -> django_contrib_auth_models_User
+  [label="user (operator)"] [arrowhead=none, arrowtail=dot];
   
   
   

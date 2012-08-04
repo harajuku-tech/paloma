@@ -7,11 +7,15 @@ Models
 MTA
 ====
 
+.. _paloma.models.Domain:
+
 Domain
 --------
 
 .. autoclass:: paloma.models.Domain
     :members:
+
+.. _paloma.models.Alias:
 
 Alias
 --------
@@ -22,11 +26,15 @@ Alias
 Paloma
 =========
 
+.. _paloma.models.Owner:
+
 Owner
 --------
 
 .. autoclass:: paloma.models.Owner
     :members:
+
+.. _paloma.models.Group:
 
 Group
 --------
@@ -34,12 +42,15 @@ Group
 .. autoclass:: paloma.models.Group
     :members:
 
+.. _paloma.models.Mailbox:
+
 Mailbox
 --------
 
 .. autoclass:: paloma.models.Mailbox
     :members:
 
+.. _paloma.models.Schedule:
 
 Schedule
 --------
@@ -47,11 +58,15 @@ Schedule
 .. autoclass:: paloma.models.Schedule
     :members:
 
+.. _paloma.models.Message:
+
 Message
 --------
 
 .. autoclass:: paloma.models.Message
     :members:
+
+.. _paloma.models.Journal:
 
 Journal
 --------
@@ -59,12 +74,16 @@ Journal
 .. autoclass:: paloma.models.Journal
     :members:
 
+.. _paloma.models.AbstractProfile:
+
 AbstractProfile
 ----------------
 
 .. autoclass:: paloma.models.AbstractProfile
     :members:
 
+
+.. _paloma.models.ER:
 
 ER
 ===

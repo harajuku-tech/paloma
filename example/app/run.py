@@ -19,16 +19,18 @@ def configure(args):
 
     if  len(args) < 3 or args[2] == "start" :
         #: start worker
-        return [ args[0], "celeryd",
+        return [ args[0], 
+                "celeryd",
                 "--loglevel" , LOG_LEVEL,
                 "--pidfile" , PID_FILE, 
                 "--logfile" , LOG_FILE ,
-                "-E",                       # event option
+#                "-E",                       # event option
             ]
 
     if  len(args) >2 and args[2] == "stop":
         #: stop worker
-        return [ args[0],"celeryd_multi",
-                 "stop",NODE,
+        return [ args[0],
+                "celeryd_multi",
+                "stop",NODE,
                 "--pidfile=%s" % PID_FILE, 
             ]

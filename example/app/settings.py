@@ -219,3 +219,6 @@ INSTALLED_APPS +=('django_extensions',)  #:  tools for django-extensions
 import applogs
 applogs.config(LOGGING)
 
+# -- sample app
+
+INSTALLED_APPS +=('app.foods',)  #:  Sammple application for Paloma

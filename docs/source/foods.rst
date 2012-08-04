@@ -24,7 +24,7 @@ Customer is a profile information for signed-up Django User.
 Shop
 ^^^^^^^^
 
-Shop is a profile information for a Django Group defined by :ref:`paloma.models.Owner`.
+Shop is a profile information for a :ref:`paloma.models.Group` defined by :ref:`paloma.models.Owner`.
 
 .. autoclass:: app.foods.models.Shop
     :members:

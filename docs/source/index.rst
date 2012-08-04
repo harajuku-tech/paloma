@@ -13,6 +13,7 @@ Contents:
 
     postfix
     note
+    models
     terms
 
 Indices and tables

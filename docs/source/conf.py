@@ -298,4 +298,6 @@ sys.path.insert(0, os.path.join(os.path.dirname(PRJ_PATH ),'app'))
 from django.core.management import execute_manager
 import imp
 imp.find_module('settings') # Assumed to be in the same directory.
-#
+
+# Graphviz to draw ER 
+extensions.append('sphinx.ext.graphviz')#

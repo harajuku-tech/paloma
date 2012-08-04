@@ -14,6 +14,7 @@ Contents:
     postfix
     note
     models
+    foods    
     terms
 
 Indices and tables

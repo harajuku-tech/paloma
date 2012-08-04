@@ -1,5 +1,5 @@
 #!/bin/bash
-APPS="paloma"
+APPS="paloma foods"
 MANAGE="../example/manage.py"
 GREP_OPTIONS=
 echo  ${APPS}

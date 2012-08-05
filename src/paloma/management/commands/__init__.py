@@ -5,6 +5,7 @@ from django.core.management.base import BaseCommand, CommandError
 from optparse import make_option
 from datetime import datetime
 import commands
+import sys
 import os
 
 class GenericCommand(BaseCommand):
@@ -41,6 +42,10 @@ class GenericCommand(BaseCommand):
             help=u'encoding'),
         )
     ''' Command Option '''
+
+    def open_file(self,options):
+        fp = sys.stdin if options['file'] == 'stdin' else open(options['file'])
+        return fp
 
     def handle_count(self,*args,**option):
         if self.model:

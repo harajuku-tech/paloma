@@ -203,7 +203,11 @@ import djcelery
 djcelery.setup_loader()
 
 # - paloma for mail transfer agents
-EMAIL_BACKEND = 'paloma.backends.CeleryEmailBackend'
+if 'test' not in sys.argv:
+    EMAIL_BACKEND = 'paloma.backends.CeleryEmailBackend'
+else:
+    EMAIL_BACKEND = 'paloma.backends.JournalEmailBackend'
+
 PALOMA_EMAIL_BACKEND = 'django.core.mail.backends.locmem.EmailBackend'
 #CELERY_EMAIL_TASK_CONFIG = {
 #    'queue' : 'django_email',

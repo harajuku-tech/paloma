@@ -14,6 +14,7 @@ Contents:
     postfix
     note
     models
+    backends
     foods    
     terms
 

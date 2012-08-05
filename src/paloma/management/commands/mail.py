@@ -1,37 +1,21 @@
 # -*- coding: utf-8 -*-
 
-from django.core.management.base import BaseCommand, CommandError
+from paloma.management.commands import GenericCommand
+#from django.core.management.base import BaseCommand, CommandError
 
 from optparse import make_option
 from datetime import datetime
 import commands
 import os
 
-class Command(BaseCommand):
+class Command(GenericCommand):
     ''' paloma maile management
     '''
     args = ''
     help = ''
 
-    option_list = BaseCommand.option_list + (
+    option_list = GenericCommand.option_list + (
 
-        make_option('--command',
-            action='store',
-            dest='command',
-            default='help',
-            help=u'sub command'),
-
-        make_option('--file',
-            action='store',
-            dest='file',
-            default='stdin',
-            help=u'flle'),
-
-        make_option('--encoding',
-            action='store',
-            dest='encoding',
-            default='utf-8',
-            help=u'encoding'),
         )
     ''' Command Option '''
 
@@ -56,9 +40,3 @@ class Command(BaseCommand):
             if m == None:
                 continue
             print m.group(1)
-
-    def handle(self  ,*args, **options):
-        '''  command main '''
-
-        getattr(self, 'handle_%s'% options['command'],Command.handle_help)(*args,**options)
-

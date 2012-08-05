@@ -6,7 +6,7 @@ from celery.task import task
 from paloma.models import Schedule
 
 CONFIG = getattr(settings, 'CELERY_EMAIL_TASK_CONFIG', {})
-BACKEND = getattr(settings, 'CELERY_EMAIL_BACKEND',
+BACKEND = getattr(settings, 'PALOMA_EMAIL_BACKEND',
                   'django.core.mail.backends.smtp.EmailBackend')
 
 #TASK_CONFIG = {
@@ -17,6 +17,8 @@ BACKEND = getattr(settings, 'CELERY_EMAIL_BACKEND',
 #
 
 #@task(**TASK_CONFIG)
+# `send_emials( list_of_messages ,**kwargs )` can be defned too,
+# but that makes serialized message bigger.
 @task(serializer='pickle')
 def send_email(message, **kwargs):
     try:

@@ -19,3 +19,8 @@ DBSHELL()
 {
     python ../manage.py dbshell
 }
+
+TESTMAIL()
+{
+    python ../manage.py mail send --file ../../src/paloma/fixtures/test.eml
+}

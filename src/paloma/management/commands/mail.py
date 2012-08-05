@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from paloma.management.commands import GenericCommand
-#from django.core.management.base import BaseCommand, CommandError
+from paloma.mails import send_mail
 
 from optparse import make_option
 from datetime import datetime
@@ -28,7 +28,6 @@ class Command(GenericCommand):
         fp = sys.stdin if options['file'] == 'stdin' else open(options['file'])
         msg = message_from_file(fp)
 
-        from django.core.mail import send_mail
         send_mail(msg['Subject'],str(msg),msg['From'],msg['To'].split(',') )
 
     def handle_help(self,*args,**options):

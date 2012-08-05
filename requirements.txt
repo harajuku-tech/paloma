@@ -7,3 +7,4 @@ django-kombu
 kombu<2.2.0
 south
 django_extensions
+pytz

@@ -1,12 +1,15 @@
 from django.conf import settings
 from django.core.mail import get_connection
+from django.utils.timezone import now
 
 from celery.task import task
 
 from paloma.models import Schedule
 
 CONFIG = getattr(settings, 'CELERY_EMAIL_TASK_CONFIG', {})
-BACKEND = getattr(settings, 'PALOMA_EMAIL_BACKEND',
+
+#: Actual Backend for sending email
+BACKEND = getattr(settings, 'CELERY_EMAIL_BACKEND',
                   'django.core.mail.backends.smtp.EmailBackend')
 
 #TASK_CONFIG = {
@@ -63,4 +66,4 @@ def enqueue_schedule(sender,id=None):
     Schedule.objects.enqueue_messages(id )
 
 # backwards compat
-SendEmailTask = send_email
+#SendEmailTask = send_email

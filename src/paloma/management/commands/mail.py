@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from paloma.management.commands import GenericCommand
-from paloma.mails import send_mail,send_mail_from_file
+from paloma.mails import send_mail_simple,send_mail_from_file
 
 from optparse import make_option
 from datetime import datetime

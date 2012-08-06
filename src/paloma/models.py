@@ -274,6 +274,9 @@ class Journal(models.Model):
     ''' Raw Message
 
     '''
+    dt_created=  models.DateTimeField(u'Journaled Datetime'  ,help_text=u'Journaled datetime', auto_now_add=True )
+    ''' Journaled Datetime '''
+
     sender= models.CharField(u'Sender',max_length=100)
     ''' sender '''
     
@@ -284,4 +287,9 @@ class Journal(models.Model):
     ''' Message text '''
 
     is_jailed = models.BooleanField(u'Jailed Message',default=False )
+    ''' Jailed(Reciepient missing emails have been journaled) if true '''
+
+    class Meta:
+        verbose_name=u'Journal'
+        verbose_name_plural=u'Journals'
 

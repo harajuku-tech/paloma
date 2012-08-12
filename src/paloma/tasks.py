@@ -65,5 +65,11 @@ def enqueue_schedule(sender,id=None):
     ''' enqueue specifid mail schedule '''
     Schedule.objects.enqueue_messages(id )
 
+@task
+def trigger_schedule(sender):
+    from mails import send_mail_simple
+    text = str(now())
+    send_mail_simple(text,text,'triger@test.com','enqueue@test.com')        
+
 # backwards compat
 #SendEmailTask = send_email

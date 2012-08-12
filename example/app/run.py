@@ -25,6 +25,8 @@ def configure(args):
                 "--pidfile" , PID_FILE, 
                 "--logfile" , LOG_FILE ,
 #                "-E",                       # event option
+                "--beat" , 
+                "--scheduler","djcelery.schedulers.DatabaseScheduler",
             ]
 
     if  len(args) >2 and args[2] == "stop":
@@ -34,3 +36,4 @@ def configure(args):
                 "stop",NODE,
                 "--pidfile=%s" % PID_FILE, 
             ]
+

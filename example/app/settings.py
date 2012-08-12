@@ -191,9 +191,9 @@ if 'test' not in sys.argv:
 INSTALLED_APPS += ('djcelery','djkombu',)
 # -- Django Backend
 #BROKER_URL="django://"
-#BROKER_URL = 'amqp://guest:guest@localhost:5672//'
+BROKER_URL = 'amqp://guest:guest@localhost:5672//'
 #BROKER_URL = 'redis://localhost:6379/0'
-BROKER_URL = 'mongodb://localhost:27017/paloma'
+#BROKER_URL = 'mongodb://localhost:27017/paloma'
 #
 #CELERY_ALWAYS_EAGER = True  #:True: synchronous
 #CELERY_TASK_SERIALIZER='json'
@@ -205,6 +205,7 @@ djcelery.setup_loader()
 # - paloma for mail transfer agents
 if 'test' not in sys.argv:
     EMAIL_BACKEND = 'paloma.backends.CeleryEmailBackend'
+#    EMAIL_BACKEND = 'paloma.backends.JournalEmailBackend'
 else:
     EMAIL_BACKEND = 'paloma.backends.JournalEmailBackend'
 

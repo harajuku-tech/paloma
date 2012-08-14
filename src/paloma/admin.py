@@ -6,6 +6,7 @@ from django.conf import settings
 if settings.DEBUG:
     try:
         from djkombu.models import Queue as KombuQueue,Message as KombuMessage
+        from djcelery.models import TaskMeta,TaskSetMeta
 
         ### KombuQueue
         class KombuQueueAdmin(admin.ModelAdmin):
@@ -22,6 +23,17 @@ if settings.DEBUG:
         class KombuMessageAdmin(admin.ModelAdmin):
             list_display=tuple([f.name for f in KombuMessage._meta.fields])
         admin.site.register(KombuMessage,KombuMessageAdmin)
+
+        ### TaskMeta
+        class TaskMetaAdmin(admin.ModelAdmin):
+            list_display=tuple([f.name for f in TaskMeta._meta.fields])
+        admin.site.register(TaskMeta,TaskMetaAdmin)
+        
+        ### TaskSetMeta
+        class TaskSetMetaAdmin(admin.ModelAdmin):
+            list_display=tuple([f.name for f in TaskSetMeta._meta.fields])
+        admin.site.register(TaskSetMeta,TaskSetMetaAdmin)
+        
         
     except Exception,e:
         print e

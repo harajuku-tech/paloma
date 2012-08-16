@@ -43,7 +43,8 @@ class Command(GenericCommand):
                     timezone.get_current_timezone())
         else :
             eta=None 
-        trigger_schedule.apply_async(eta=eta)
+        t=trigger_schedule.apply_async(eta=eta)
+        print "Task is scheduled.id=",t.id
 
     def handle_help(self,*args,**options):
         '''  help

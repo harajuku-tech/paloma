@@ -27,6 +27,8 @@ if settings.DEBUG:
         ### TaskMeta
         class TaskMetaAdmin(admin.ModelAdmin):
             list_display=tuple([f.name for f in TaskMeta._meta.fields])
+            list_filter = ('status',)
+            date_hierarchy = 'date_done'
         admin.site.register(TaskMeta,TaskMetaAdmin)
         
         ### TaskSetMeta

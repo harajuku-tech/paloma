@@ -9,5 +9,6 @@ dist
 src/paloma.egg-info
 run
 app.log*
+*.db
 *.DS_Store
 

@@ -74,5 +74,7 @@ def trigger_schedule(sender=None):
     text = str(now())
     send_mail_simple(subject,body,'triger@test.com','enqueue@test.com')        
 
+    return True
+
 # backwards compat
 #SendEmailTask = send_email

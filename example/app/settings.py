@@ -187,17 +187,20 @@ if 'test' not in sys.argv:
     pass
 
 # - django-celery for asynchoronous task queue
-
+#
 INSTALLED_APPS += ('djcelery','djkombu',)
-# -- Django Backend
+#: Broker
 #BROKER_URL="django://"
 BROKER_URL = 'amqp://guest:guest@localhost:5672//'
 #BROKER_URL = 'redis://localhost:6379/0'
 #BROKER_URL = 'mongodb://localhost:27017/paloma'
 #
 #CELERY_ALWAYS_EAGER = True  #:True: synchronous
+#: Serializer
 #CELERY_TASK_SERIALIZER='json'
 CELERY_TASK_SERIALIZER='pickle'
+#: Persistent Worker State
+CELERYD_STATE_DB=os.path.join(PROJECT_DIR,'celery_state.db')
 #
 import djcelery
 djcelery.setup_loader()

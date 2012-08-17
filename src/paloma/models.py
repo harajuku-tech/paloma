@@ -150,22 +150,7 @@ class Mailbox(models.Model):
 
 class ScheduleManager(models.Manager):
     ''' Schedule Manager '''
-
-    def enqueue_messages(self,id=None):
-        ''' enqueue_messages
-
-            :param id: Schedule id
-        ''' 
-        args={}
-        if id !=None:
-            args['id'] = id
-
-        for s in self.filter(**args): 
-            if s.status== "scheduled":
-                s.generate_messages()
-                s.status = "active"
-                s.save()
-                
+    pass                
 
 SCHEDULE_STATUS=(
                     ('pending','pending'),
@@ -218,22 +203,10 @@ class Schedule(models.Model):
                 except Exception,e:
                     pass 
         return context
-
-    def generate_messages(self):
-        from django.template import Template,Context
-        for g in self.groups.all():
-            for m in g.mailbox_set.all():             
-                context = self.get_context(g,m.user )
-                msg=None
-                try:
-                    msg = Message.objects.get(schedule=self,mailbox=m )
-                except Exception,e:
-                    msg = Message(schedule=self,mailbox=m )
-                msg.text = Template(self.text).render(Context(context))
-                msg.save()
     
 class MessageManager(models.Manager):
     ''' Message Manager'''
+
     def handle_incomming_mail(self,sender,recipient,mssage ):
         ''' 
             :param mesage: :py:class:`email.Message`
@@ -281,6 +254,7 @@ class Message(models.Model):
     #: TODO: delivery statusm management
 
     objects = MessageManager()
+
 
 class JournalManager(models.Manager):
     ''' Message Manager'''

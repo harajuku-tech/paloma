@@ -1,10 +1,11 @@
 from django.conf import settings
 from django.core.mail import get_connection
 from django.utils.timezone import now
+from django.template import Template,Context
 
 from celery.task import task
 
-from paloma.models import Schedule
+from paloma.models import Schedule,Group,Mailbox,Message
 
 CONFIG = getattr(settings, 'CELERY_EMAIL_TASK_CONFIG', {})
 
@@ -61,12 +62,6 @@ def bounce(sender,recipient,text,is_jailed=False,*args,**kwawrs):
             print e
 
 @task
-def enqueue_schedule(sender,id=None):
-    ''' enqueue specifid mail schedule '''
-    if id != None:
-        Schedule.objects.enqueue_messages(id )
-
-@task
 def trigger_schedule(sender=None):
     subject = trigger_schedule.name + ":" + str(trigger_schedule.request.id) + ":" + str(now())
     body = str(dir(trigger_schedule) )  + "\n" + str(dir(trigger_schedule.request))
@@ -79,3 +74,52 @@ def trigger_schedule(sender=None):
 
 # backwards compat
 #SendEmailTask = send_email
+
+@task
+def enqueue_schedule(sender,id=None):
+    ''' enqueue specifid mail schedule , or all schedules
+    '''
+
+    args={}
+    if id !=None:
+        args['id'] = id
+
+    for s in Schedule.objects.filter(**args):
+        if s.status== "scheduled":
+            generate_messages_for_schedule(sender,s.id ) #: Asynchronized Call
+            s.status = "active"
+            s.save()
+
+@task
+def generate_messages_for_schedule(sender,schedule_id):
+    ''' Generate messages for speicifed Schedule
+    '''
+    try:   
+        schedule = Schedule.objects.get(id = schedule_id ) 
+        for g in schedule.groups.all():
+            for m in g.mailbox_set.all():
+                generate_message(sender,schedule.id,g.id,m.id )
+    except Exception,e:
+        raise e
+
+@task
+def generate_message(sender,schedule_id,group_id, mailbox_id ): 
+    ''' Generate (or update) message for specifed group and mailbox
+    '''
+    try:
+        schedule = Schedule.objects.get(id=schedule_id )
+        group = Group.objects.get(id=group_id)
+        mailbox= Mailbox.objects.get(id=mailbox_id)
+
+        context = schedule.get_context(group,mailbox.user)        
+        msg=None
+        try:
+            msg = Message.objects.get(schedule=schedule,mailbox=mailbox )
+        except Exception,e:
+            msg = Message(schedule=schedule,mailbox=mailbox )
+
+        msg.text = Template(schedule.text).render(Context(context))
+        msg.save()
+
+    except Exception,e:
+        raise e 

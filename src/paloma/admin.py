@@ -75,7 +75,7 @@ admin.site.register(Mailbox,MailboxAdmin)
 
 ### Schedule 
 class ScheduleAdmin(admin.ModelAdmin):
-    list_display=['id', 'owner', 'subject', 'text', 'dt_start', 'forward_to']
+    list_display=['id', 'owner', 'subject', 'text', 'dt_start', 'forward_to','task',]
 admin.site.register(Schedule,ScheduleAdmin)
 ### Message 
 class MessageAdmin(admin.ModelAdmin):

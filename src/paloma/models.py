@@ -177,6 +177,9 @@ class Schedule(models.Model):
     groups = models.ManyToManyField(Group ,verbose_name=u'Traget Groups ' )
     ''' Group '''
 
+    task= models.CharField(u'Task ID',max_length=100 ,default=None,null=True,blank=True,)
+    ''' Task ID  '''
+
     dt_start =  models.DateTimeField(u'Start to send '  ,help_text=u'created datetime',default=now )
     ''' Stat datetime to send'''
 

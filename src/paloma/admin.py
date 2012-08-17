@@ -1,7 +1,13 @@
 # -*- coding: utf-8 -*- 
 from django.contrib import admin
-from models import *
 from django.conf import settings
+from django.utils.timezone import now
+
+from celery import app
+
+from models import *
+from tasks import enqueue_schedule
+
 
 if settings.DEBUG:
     try:
@@ -85,9 +91,20 @@ class ScheduleAdmin(admin.ModelAdmin):
             :param form: Form instance
             :param change: bool
         ''' 
-        if obj.status == 'scheduled':
-            print obj
-        return super(ScheduleAdmin,self).save_model(request,obj,form,change)
+        if 'status' in form.changed_data :
+            if obj.status == 'scheduled':
+                if  obj.dt_start < now() or  ( obj.task != None and obj.task !="")  :
+                    #: Don not save()
+                    return
+                #: create_task
+                t = enqueue_schedule.apply_async(("admin",obj.id),{},eta=obj.dt_start)
+                obj.task =t.id                  
+
+            elif obj.status == "canceled":
+                if obj.task != None:
+                    app.current_app().control.revoke(obj.task)
+
+        super(ScheduleAdmin,self).save_model(request,obj,form,change)
 
 admin.site.register(Schedule,ScheduleAdmin)
 ### Message 

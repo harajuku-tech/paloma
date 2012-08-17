@@ -160,8 +160,12 @@ class ScheduleManager(models.Manager):
         if id !=None:
             args['id'] = id
 
-        for s in self.filter(): 
-            s.generate_messages()
+        for s in self.filter(**args): 
+            if s.status== "scheduled":
+                s.generate_messages()
+                s.status = "active"
+                s.save()
+                
 
 SCHEDULE_STATUS=(
                     ('pending','pending'),

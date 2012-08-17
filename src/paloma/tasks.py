@@ -63,7 +63,8 @@ def bounce(sender,recipient,text,is_jailed=False,*args,**kwawrs):
 @task
 def enqueue_schedule(sender,id=None):
     ''' enqueue specifid mail schedule '''
-    Schedule.objects.enqueue_messages(id )
+    if id != None:
+        Schedule.objects.enqueue_messages(id )
 
 @task
 def trigger_schedule(sender=None):

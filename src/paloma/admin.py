@@ -75,7 +75,20 @@ admin.site.register(Mailbox,MailboxAdmin)
 
 ### Schedule 
 class ScheduleAdmin(admin.ModelAdmin):
-    list_display=['id', 'owner', 'subject', 'text', 'dt_start', 'forward_to','task',]
+    list_display=['status','id', 'owner', 'subject', 'text', 'dt_start', 'forward_to','task']
+
+    def save_model(self, request, obj, form, change):
+        ''' Saving... 
+
+            :param request: request object to view
+            :param obj: Schedule instance
+            :param form: Form instance
+            :param change: bool
+        ''' 
+        if obj.status == 'scheduled':
+            print obj
+        return super(ScheduleAdmin,self).save_model(request,obj,form,change)
+
 admin.site.register(Schedule,ScheduleAdmin)
 ### Message 
 class MessageAdmin(admin.ModelAdmin):

@@ -5,9 +5,10 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate
 from django.core.urlresolvers import reverse
+from django.utils.translation import ugettext_lazy as _
+from django.utils.timezone import now
 
 from datetime import datetime,timedelta
-from django.utils.timezone import now
 import sys,traceback
 
 class Domain(models.Model):
@@ -162,6 +163,14 @@ class ScheduleManager(models.Manager):
         for s in self.filter(): 
             s.generate_messages()
 
+SCHEDULE_STATUS=(
+                    ('pending','pending'),
+                    ('scheduled','scheduled'),
+                    ('active','active'),
+                    ('finished','finished'),
+                    ('canceled','canceled'),
+                )
+
 class Schedule(models.Model):
     ''' Message Delivery Schedule'''
 
@@ -179,6 +188,9 @@ class Schedule(models.Model):
 
     task= models.CharField(u'Task ID',max_length=100 ,default=None,null=True,blank=True,)
     ''' Task ID  '''
+
+    status= models.CharField(_(u"status"), max_length=24,db_index=True,
+                                default="pending", choices=SCHEDULE_STATUS) 
 
     dt_start =  models.DateTimeField(u'Start to send '  ,help_text=u'created datetime',default=now )
     ''' Stat datetime to send'''

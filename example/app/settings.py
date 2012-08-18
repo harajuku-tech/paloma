@@ -210,6 +210,7 @@ if 'test' not in sys.argv:
     EMAIL_BACKEND = 'paloma.backends.CeleryEmailBackend'
 #    EMAIL_BACKEND = 'paloma.backends.JournalEmailBackend'
 else:
+    #: in testing. save messages directory to Journal model
     EMAIL_BACKEND = 'paloma.backends.JournalEmailBackend'
 
 PALOMA_EMAIL_BACKEND = 'django.core.mail.backends.locmem.EmailBackend'

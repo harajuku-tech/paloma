@@ -13,6 +13,7 @@ Contents:
 
     postfix
     note
+    address    
     models
     backends
     foods    

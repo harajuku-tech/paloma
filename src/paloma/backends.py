@@ -27,7 +27,8 @@ class CeleryEmailBackend(BaseEmailBackend):
         return results
 
 class JournalEmailBackend(BaseEmailBackend):
-    ''' A Django Email Backend to save email to :ref:`paloma.models.Journal` entity
+    ''' A Django Email Backend to save email 
+        directly  to :ref:`paloma.models.Journal` model
     ''' 
 
     def send_messages(self, email_messages, **kwargs):

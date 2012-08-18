@@ -97,7 +97,8 @@ def generate_messages_for_schedule(sender,schedule_id):
     try:   
         schedule = Schedule.objects.get(id = schedule_id ) 
         for g in schedule.groups.all():
-            for m in g.mailbox_set.all():
+            for m in g.mailbox_set.exclude(user=None):
+                #: TODO: Exclude  user == None or is_active ==False or forward == None
                 generate_message(sender,schedule.id,g.id,m.id )
     except Exception,e:
         raise e

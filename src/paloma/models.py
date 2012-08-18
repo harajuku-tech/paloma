@@ -129,7 +129,9 @@ class Mailbox(models.Model):
 
         - a system user can have multiple personality
     '''
-    user= models.ForeignKey(User,verbose_name=u'System User' )
+    user= models.ForeignKey(User,
+            verbose_name=u'System User',
+            default=None,blank=True,null=True )
     ''' System User '''
 
     address = models.CharField(u'Forward address',max_length=100 )
@@ -146,7 +148,10 @@ class Mailbox(models.Model):
     ''' Opt-In Group'''
 
     def __unicode__(self):
-       return self.user.__unicode__() + "(%s)"% self.address 
+       return "%s(%s)"% (
+            self.user.__unicode__() if self.user else "unbound user",
+            self.address ,
+        )
 
 class ScheduleManager(models.Manager):
     ''' Schedule Manager '''

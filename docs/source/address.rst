@@ -42,10 +42,10 @@ Addresses
         - Group sentds greeting mail to User with confirmation url.
         - shibuya@lafoglia.jp
 
-    *   - Signon Try
+    *   - Sign-in Try
         - Registered User can send signon trial to Group
-        - shibuya-on@lafoglia.jp 
+        - shibuya-in@lafoglia.jp 
 
-    *   - Signon Greeting
+    *   - Sign-in Greeting
         - Group returns signon greeting mal with confirmation url.
         - shibuya@lafoglia.jp

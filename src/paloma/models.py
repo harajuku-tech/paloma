@@ -8,6 +8,8 @@ from django.core.urlresolvers import reverse
 from django.utils.translation import ugettext_lazy as _
 from django.utils.timezone import now
 
+from django.template import Template,Context
+
 from datetime import datetime,timedelta
 import sys,traceback
 
@@ -290,7 +292,12 @@ class Notice(models.Model):
     text =  models.TextField(u'Text',max_length=100 ,)
     ''' Text '''
 
-
+    def render(self,*args,**kwargs):
+        ''' 
+            :param kwargs: Context dictionary (Group,Enroll,...)
+        '''        
+        return tuple([Template(text).render(Context(kwargs)) 
+                in [self.subject,self.text] ])
 
 class ScheduleManager(models.Manager):
     ''' Schedule Manager '''

@@ -81,9 +81,15 @@ admin.site.register(Mailbox,MailboxAdmin)
 
 ### Enroll 
 class EnrollAdmin(admin.ModelAdmin):
-    list_display=('id', 'mailbox', 'inviter', 'prospect','secret','short_secret',
+    list_display=('id','enroll_type', 'mailbox','group', 'inviter', 'prospect','secret','short_secret',
                     'dt_expire','dt_try', 'dt_commit' )
+    list_filter=('enroll_type',)
 admin.site.register(Enroll,EnrollAdmin)
+
+### Notice 
+class NoticeAdmin(admin.ModelAdmin):
+    list_display=tuple([f.name for f in Notice._meta.fields ])
+admin.site.register(Notice,NoticeAdmin)
 
 ### Schedule 
 class ScheduleAdmin(admin.ModelAdmin):

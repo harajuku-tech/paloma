@@ -86,7 +86,7 @@ class Owner(models.Model):
     ''' Forward address for incomming email '''
 
     def __unicode__(self):
-        return self.user.__unicode__() + "@%s"%self.domain
+        return "%s@%s" % (self.user.__unicode__(),self.domain )
 
 class Operator(models.Model):
     ''' Operator
@@ -98,7 +98,7 @@ class Operator(models.Model):
     ''' System User '''
 
     def __unicode__(self):
-        return self.user.__unicode__() + "@%s"%self.owner.domain
+        return "%s@%s" % ( self.user.__unicode__(),self.owner.domain)
 
 class Group(models.Model):
     ''' Group
@@ -115,7 +115,7 @@ class Group(models.Model):
     ''' Symbol '''
 
     def __unicode__(self):
-        return self.name + " by " + self.owner.__unicode__()
+        return "%s by %s" % ( self.name,  self.owner.__unicode__() )
 
     @property
     def main_address(self):
@@ -154,29 +154,60 @@ class Mailbox(models.Model):
             self.address if self.address else "not registered",
         )
 
+
+class EnrollManager(models.Manager):
+    ''' Enroll Manager '''
+
+    def provide_activate(self,mailbox):
+        ''' Activation     
+            :param mailbox: Mailbox model instance
+        '''
+        if mailbox.enroll==None:
+            ret = Enroll(mailbox=mailbox)
+        else:
+            ret = mailbox.enroll
+
+        ret.enroll_type = "activate" 
+        ret.dt_expire=now() + timedelta(minutes=3)      #:TODO
+        ret.save()
+        return ret
+
+    def provide_signin(self,mailbox):
+        ''' Password reset or.. 
+            :param mailbox: Mailbox model instance
+        '''
+        if mailbox.enroll==None:
+            ret = Enroll(mailbox=mailbox)
+        else:
+            ret = mailbox.enroll
+
+        ret.enroll_type = "signin" 
+        ret.dt_expire=now() + timedelta(minutes=3)      #:TODO
+        ret.save()
+        return ret
+
+    def provide_signup(self,group):
+        ''' Sing Up  
+        '''
+        ret = Enroll(group=group)  
+        ret.enroll_type = "signup" 
+        ret.dt_expire=now() + timedelta(minutes=3)      #:TODO
+        ret.save()
+        return ret
+
+    def provide_invite(self,group,inviter):
+        ret = Enroll(group=group,inviter=inviter)  
+        ret.enroll_type = "invite" 
+        ret.dt_expire=now() + timedelta(minutes=3)      #:TODO
+        ret.save()
+        return ret
+
 ENROLL_TYPE = (
                 ('activate','activate'),
                 ('signup','signup',),
                 ('signin','signin',),
                 ('invite','invite',),
             )
-
-class EnrollManager(models.Manager):
-    ''' Enroll Manager '''
-
-    def provide_activate(self):
-        pass                
-
-    def provide_signin(self):
-        pass
-
-    def provide_signup(self):
-        pass
-
-    def provide_invite(self):
-        pass
-
-
 
 class Enroll(models.Model):  
     ''' Enroll management 
@@ -190,6 +221,16 @@ class Enroll(models.Model):
     mailbox= models.OneToOneField(Mailbox,verbose_name=u'Mailbox' 
                     ,null=True,default=None,blank=True)
     ''' Mailbox '''
+
+    enroll_type = models.CharField(_(u"Enroll Type"), 
+                            max_length=24,db_index=True,
+                            default="activate", choices=ENROLL_TYPE) 
+    ''' Enroll Type '''
+
+    group= models.ForeignKey(Group,verbose_name=u'Group' 
+                    ,null=True,default=None,blank=True,
+                    on_delete=models.SET_NULL)
+    ''' Groupr'''
 
     inviter= models.ForeignKey(User,verbose_name=u'Invite' 
                     ,null=True,default=None,blank=True,
@@ -232,6 +273,24 @@ class Enroll(models.Model):
 
     def apply(self,secret):
         pass
+
+
+class Notice(models.Model):
+    ''' Notice text '''
+
+    owner= models.ForeignKey(Owner,verbose_name=u'Owner' )
+    ''' Owner'''
+
+    name = models.CharField(u'Notice Name',max_length=20,)
+    ''' Notice Name'''
+
+    subject= models.CharField(u'Subject',max_length=100 ,)
+    ''' Subject '''
+
+    text =  models.TextField(u'Text',max_length=100 ,)
+    ''' Text '''
+
+
 
 class ScheduleManager(models.Manager):
     ''' Schedule Manager '''
@@ -277,7 +336,7 @@ class Schedule(models.Model):
     #: TODO:  Filtering 
 
     def __unicode__(self):
-        return self.subject + self.dt_start.strftime('(%Y-%m-%d %H:%M:%S) by ' + self.owner.__unicode__())
+        return self.subject + self.dt_start.strftime("(%Y-%m-%d %H:%M:%S) by " + self.owner.__unicode__())
 
     def get_context(self,group,user):
         context = {}

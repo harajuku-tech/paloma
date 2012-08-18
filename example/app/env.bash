@@ -24,6 +24,10 @@ TESTMAIL()
 {
     python ../manage.py mail send --file ../../src/paloma/fixtures/test.eml
 }
+CI_LOG()
+{
+    tail -f /var/celery.log | grep -v djcelery_periodictasks
+}
 CI_SCHEDULED()
 {
     python ../manage.py celery inspect scheduled

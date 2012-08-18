@@ -66,6 +66,14 @@ Enroll
 .. autoclass:: paloma.models.Enroll
     :members:
 
+.. _paloma.models.Notice:
+
+Notice
+--------
+
+.. autoclass:: paloma.models.Notice
+    :members:
+
 .. _paloma.models.Schedule:
 
 Schedule

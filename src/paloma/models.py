@@ -11,6 +11,8 @@ from django.utils.timezone import now
 from datetime import datetime,timedelta
 import sys,traceback
 
+from utils import create_auto_secret,create_auto_short_secret
+
 class Domain(models.Model):
     ''' Domain
 
@@ -124,18 +126,16 @@ class Group(models.Model):
                             ('owner','symbol'),
                         )
 
+
 class Mailbox(models.Model):
     ''' Mailbox
 
         - a system user can have multiple personality
     '''
-    user= models.ForeignKey(User,
-            verbose_name=u'System User',
-            default=None,blank=True,null=True )
+    user= models.ForeignKey(User, verbose_name=u'System User' )
     ''' System User '''
 
-    address = models.CharField(u'Forward address',max_length=100 
-            ,default=None,blank=True,null=True)
+    address = models.CharField(u'Forward address',max_length=100 ,unique=True)
     ''' Email Address 
     '''
 
@@ -153,6 +153,85 @@ class Mailbox(models.Model):
             self.user.__unicode__() if self.user else "unbound user",
             self.address if self.address else "not registered",
         )
+
+ENROLL_TYPE = (
+                ('activate','activate'),
+                ('signup','signup',),
+                ('signin','signin',),
+                ('invite','invite',),
+            )
+
+class EnrollManager(models.Manager):
+    ''' Enroll Manager '''
+
+    def provide_activate(self):
+        pass                
+
+    def provide_signin(self):
+        pass
+
+    def provide_signup(self):
+        pass
+
+    def provide_invite(self):
+        pass
+
+
+
+class Enroll(models.Model):  
+    ''' Enroll management 
+
+        - Activate
+        - Sign In
+        - Invitation
+        - Sign Up
+    '''
+
+    mailbox= models.OneToOneField(Mailbox,verbose_name=u'Mailbox' 
+                    ,null=True,default=None,blank=True)
+    ''' Mailbox '''
+
+    inviter= models.ForeignKey(User,verbose_name=u'Invite' 
+                    ,null=True,default=None,blank=True,
+                    on_delete=models.SET_NULL)
+    ''' Inviter'''
+
+    prospect = models.CharField(u'Prospect',max_length=100,default=None,null=True,blank=True)
+    ''' Prospect Email Address'''
+
+    secret= models.CharField(u'Secret',max_length=100,default=create_auto_secret,unique=True)
+    ''' Secret
+    '''
+    short_secret= models.CharField(u'Short Secret',max_length=10,default=create_auto_short_secret,
+                unique=True)
+    ''' Short Secret
+    '''
+
+    dt_expire =   models.DateTimeField(u'Secrete Expired'  ,
+                                null=True, blank=True, default=None,
+                                help_text=u'Secrete Expired', )
+    ''' Secrete Expired'''
+
+    dt_try=  models.DateTimeField(u'Try Datetime'  ,
+                                null=True, blank=True, default=None,
+                                help_text=u'Try Datetime', )
+    ''' Try Datetime'''
+
+    dt_commit=  models.DateTimeField(u'Commit Datetime'  ,
+                                null=True, blank=True, default=None,
+                                help_text=u'Commit Datetime', )
+    ''' Commit Datetime'''
+    
+    objects = EnrollManager()
+
+    def activate(self,secret):
+        pass
+
+    def singup(self,address):
+        pass
+
+    def apply(self,secret):
+        pass
 
 class ScheduleManager(models.Manager):
     ''' Schedule Manager '''

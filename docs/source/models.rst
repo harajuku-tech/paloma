@@ -58,6 +58,14 @@ Mailbox
 .. autoclass:: paloma.models.Mailbox
     :members:
 
+.. _paloma.models.Enroll:
+
+Enroll
+--------
+
+.. autoclass:: paloma.models.Enroll
+    :members:
+
 .. _paloma.models.Schedule:
 
 Schedule

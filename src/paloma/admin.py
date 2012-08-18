@@ -76,8 +76,14 @@ admin.site.register(Group,GroupAdmin)
 
 ### Mailbox 
 class MailboxAdmin(admin.ModelAdmin):
-    list_display=('id', 'user', 'address', 'is_active', 'bounces' )
+    list_display=('id', 'user', 'address', 'is_active', 'bounces',)
 admin.site.register(Mailbox,MailboxAdmin)
+
+### Enroll 
+class EnrollAdmin(admin.ModelAdmin):
+    list_display=('id', 'mailbox', 'inviter', 'prospect','secret','short_secret',
+                    'dt_expire','dt_try', 'dt_commit' )
+admin.site.register(Enroll,EnrollAdmin)
 
 ### Schedule 
 class ScheduleAdmin(admin.ModelAdmin):

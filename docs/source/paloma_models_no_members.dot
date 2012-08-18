@@ -59,6 +59,14 @@
     
     </TABLE>
     >]
+    paloma_models_Enroll [label=<
+    <TABLE BGCOLOR="palegoldenrod" BORDER="0" CELLBORDER="0" CELLSPACING="0">
+     <TR><TD COLSPAN="2" CELLPADDING="4" ALIGN="CENTER" BGCOLOR="olivedrab4"
+     ><FONT FACE="Helvetica Bold" COLOR="white"
+     >Enroll</FONT></TD></TR>
+    
+    </TABLE>
+    >]
     paloma_models_Schedule [label=<
     <TABLE BGCOLOR="palegoldenrod" BORDER="0" CELLBORDER="0" CELLSPACING="0">
      <TR><TD COLSPAN="2" CELLPADDING="4" ALIGN="CENTER" BGCOLOR="olivedrab4"
@@ -136,6 +144,23 @@
   
   paloma_models_Mailbox -> paloma_models_Group
   [label="groups (mailbox)"] [arrowhead=dot arrowtail=dot, dir=both];
+  
+  
+  
+  paloma_models_Enroll -> paloma_models_Mailbox
+  [label="mailbox (enroll)"] [arrowhead=none, arrowtail=none];
+  
+  
+  django_contrib_auth_models_User [label=<
+      <TABLE BGCOLOR="palegoldenrod" BORDER="0" CELLBORDER="0" CELLSPACING="0">
+      <TR><TD COLSPAN="2" CELLPADDING="4" ALIGN="CENTER" BGCOLOR="olivedrab4"
+      ><FONT FACE="Helvetica Bold" COLOR="white"
+      >User</FONT></TD></TR>
+      </TABLE>
+      >]
+  
+  paloma_models_Enroll -> django_contrib_auth_models_User
+  [label="inviter (enroll)"] [arrowhead=none, arrowtail=dot];
   
   
   

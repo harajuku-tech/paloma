@@ -134,7 +134,8 @@ class Mailbox(models.Model):
             default=None,blank=True,null=True )
     ''' System User '''
 
-    address = models.CharField(u'Forward address',max_length=100 )
+    address = models.CharField(u'Forward address',max_length=100 
+            ,default=None,blank=True,null=True)
     ''' Email Address 
     '''
 
@@ -150,7 +151,7 @@ class Mailbox(models.Model):
     def __unicode__(self):
        return "%s(%s)"% (
             self.user.__unicode__() if self.user else "unbound user",
-            self.address ,
+            self.address if self.address else "not registered",
         )
 
 class ScheduleManager(models.Manager):

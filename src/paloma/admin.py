@@ -81,7 +81,8 @@ admin.site.register(Mailbox,MailboxAdmin)
 
 ### Enroll 
 class EnrollAdmin(admin.ModelAdmin):
-    list_display=('id','enroll_type', 'mailbox','group', 'inviter', 'prospect','secret','short_secret',
+    list_display=('id','enroll_type', 'mailbox','group', 'inviter', 'prospect',
+                    'url','secret','short_secret',
                     'dt_expire','dt_try', 'dt_commit' )
     list_filter=('enroll_type',)
 admin.site.register(Enroll,EnrollAdmin)

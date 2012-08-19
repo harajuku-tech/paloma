@@ -15,10 +15,16 @@ DJSHELL()
     python ../manage.py shell
 }
 
-DBSHELL()
+DJDB()
 {
     python ../manage.py dbshell
 }
+
+DJDUMP_PALOMA()
+{
+    python ../manage.py dumpdata --indent=2 $1  > ../../src/paloma/fixtures/$2/$1.json
+}
+
 
 TESTMAIL()
 {

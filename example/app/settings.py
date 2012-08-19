@@ -20,6 +20,8 @@ DATABASES = {
         'PASSWORD': 'paloma',                  # Not used with sqlite3.
         'HOST': '',                      # Set to empty string for localhost. Not used with sqlite3.
         'PORT': '',                      # Set to empty string for default. Not used with sqlite3.
+        'TEST_CHARSET': 'utf8',
+        'TEST_DATABASE_COLLATION': 'utf8_general_ci',
     }
 #    #:- this secondary database is for postfix-mysql 
 #    ,'postfix': {

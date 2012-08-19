@@ -130,3 +130,8 @@ class JournalAdmin(admin.ModelAdmin):
     list_display=tuple([f.name for f in Journal._meta.fields ])
 admin.site.register(Journal,JournalAdmin)
 
+### EmailTask 
+class EmailTaskAdmin(admin.ModelAdmin):
+    list_display=tuple([f.name for f in EmailTask._meta.fields ])
+admin.site.register(EmailTask,EmailTaskAdmin)
+

@@ -5,7 +5,7 @@ from django.template import Template,Context
 
 from celery.task import task
 
-from paloma.models import Schedule,Group,Mailbox,Message
+from paloma.models import Schedule,Group,Mailbox,Message,EmailTask
 
 CONFIG = getattr(settings, 'CELERY_EMAIL_TASK_CONFIG', {})
 
@@ -38,12 +38,57 @@ def send_email(message, **kwargs):
                     message.to)
         send_email.retry(exc=e)
 
+
+def enqueue_email_task(recipient,sender,journal_id):
+    """ Enqueue a email task """
+    try:
+        task = EmailTask.objects.get(email=recipient )
+        nt = now()
+        print nt,task.dt_expire,(nt < task.dt_expire )
+        if task.dt_expire == None or task.dt_expire > nt: 
+            call_task_by_name(task.task_module,task.task_name,
+                    recipient,sender,journal_id,task.task_key)
+            if task.dt_expire != None:
+                #: Expired EmalTask will be deleted by a background process.
+                task.dt_expire = nt
+                task.save()
+            return True
+    except Exception,e:
+        print e 
+        pass
+
+    return False
+
+def call_task_by_name(mod_name,task_name,*args,**kwargs):
+    """ call task by name """
+    
+    m = __import__(mod_name,globals(),locals(),["*"])
+    getattr(m,task_name).delay( *args,**kwargs)
+
+@task 
+def enroll_by_mail(recipient,sender,journal_id,key):
+    """  enroll by email
+    """
+    print "Enroll by mail",recipient,sender
+
+@task
+def reset_by_mail(recipient,sender,journal_id,key):
+    """ reset user account by email
+    """
+    print "Rese User Account by mail",recipient,sender
+    
+@task
+def ask_by_mail(recipient,sender,journal_id,key):
+    """ ask by email """
+    print "Ask by Email"
+
 @task
 def bounce(sender,recipient,text,is_jailed=False,*args,**kwawrs):
-    ''' bounce worker '''
+    """ bounce worker """
     import email  
     from models import Journal
 
+    #: First of all, save messa to the Journal
     journal=None
     try:
         journal=Journal( 
@@ -57,7 +102,9 @@ def bounce(sender,recipient,text,is_jailed=False,*args,**kwawrs):
 
     if is_jailed == False:
         try:
-            print "TODO:class incomming mail handler" 
+            #:EmailTask
+            if enqueue_email_task(recipient,sender,journal.id):
+                return
         except Exception,e:
             print e
 

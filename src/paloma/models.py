@@ -13,7 +13,7 @@ from django.template import Template,Context
 from datetime import datetime,timedelta
 import sys,traceback
 
-from utils import create_auto_secret,create_auto_short_secret
+from paloma.utils import create_auto_secret,create_auto_short_secret
 
 class Domain(models.Model):
     ''' Domain
@@ -470,3 +470,45 @@ class Journal(models.Model):
         verbose_name=u'Journal'
         verbose_name_plural=u'Journals'
 
+
+class EmailTaskManager(models.Manager):
+    def enqueue(self,recipient,sender,journal_id):
+        """ Enqueue a email task """
+        try:
+            task = self.get(email=recipient )
+            nt = now()
+            if task.dt_expire == None or task.dt_expire > nt:
+                call_task_by_name(task_module,task_name,
+                        recipient,sender,journal_id,task.id )
+                if task.dt_expire != None:
+                    #: Expired EmalTask will be deleted by a background process.
+                    task.dt_expire = nt
+                    taks.save()
+                return True
+        except Exception,e:
+            print e 
+            pass
+
+        return False
+
+class EmailTask(models.Model):
+    """ Email Task """
+
+    email = models.CharField(u'Email Address To Process',max_length=200,unique=True,db_index=True)
+    """  Email Address to Process(Key) """
+
+    task_module= models.CharField(u'Task Module',max_length=200,)
+    """  Task Module """
+    
+    task_name= models.CharField(u'Task Name',max_length=200,)
+    """  Task Name """
+
+    task_key= models.CharField(u'Task Key',max_length=20,)
+    """  Task Key for some entity(Depends on this task ) """
+
+    dt_expire =   models.DateTimeField(u'Expire Datetime'  ,
+                                null=True, blank=True, default=None,
+                                help_text=u'Expire Datetime', )
+    """ Expire Datetime """
+
+    objects = EmailTaskManager()

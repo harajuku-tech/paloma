@@ -180,16 +180,22 @@ class EnrollManager(models.Manager):
         ret.save()
         return ret
 
-    def provide_signin(self,mailbox,group,absolute=lambda x: x):
+    def provide_signin(self,mailbox,group,
+            viewname="paloma_enroll",absolute=lambda x: x):
         ''' Password reset or.. 
             :param mailbox: Mailbox model instance
         '''
-        if mailbox.enroll==None:
-            ret = Enroll(mailbox=mailbox,group=group)
-        else:
+        try:
             ret = mailbox.enroll
+        except:
+            ret = Enroll(mailbox=mailbox,group=group)
 
         ret.enroll_type = "signin" 
+        ret.secret = create_auto_secret()
+        ret.url = absolute(
+                    reverse(viewname,
+                        kwargs={"command":"signin","secret": ret.secret,})
+                  )
         ret.dt_expire=now() + timedelta(minutes=3)      #:TODO
         ret.save()
         return ret
@@ -197,18 +203,23 @@ class EnrollManager(models.Manager):
     def provide_signup(self,group):
         ''' Sing Up  
         '''
-        ret = Enroll(group=group)  
+        ret = Enroll(group=group)           #:Newly created 
         ret.enroll_type = "signup" 
         ret.dt_expire=now() + timedelta(minutes=3)      #:TODO
         ret.save()
         return ret
 
-    def provide_invite(self,group,inviter,absolute=lambda x:x):
+    def provide_invite(self,group,inviter,
+                        viewname="paloma_enroll",absolute=lambda x:x):
         ''' Invite
         '''
         ret = Enroll(group=group,inviter=inviter)  
         ret.enroll_type = "invite" 
         ret.dt_expire=now() + timedelta(minutes=3)      #:TODO
+        ret.url = absolute(
+                    reverse(viewname,
+                        kwargs={"command":"invite","secret": ret.secret,})
+                  )
         ret.save()
         return ret
 
@@ -282,6 +293,12 @@ class Enroll(models.Model):
     def notice(self):
         print self.group.owner.notice_set()
         
+    def signup_email(self):
+        return "%s-signup-%s@%s" % (
+                    self.group.symbol ,
+                    self.short_secret,
+                    self.group.owner.domain,
+                )  
 
     def activate(self,secret):
         pass
@@ -312,8 +329,8 @@ class Notice(models.Model):
         ''' 
             :param kwargs: Context dictionary (Group,Enroll,...)
         '''        
-        return tuple([Template(text).render(Context(kwargs)) 
-                in [self.subject,self.text] ])
+        return tuple([Template(t).render(Context(kwargs)) 
+                for t in [self.subject,self.text] ])
 
 class ScheduleManager(models.Manager):
     ''' Schedule Manager '''

@@ -160,26 +160,32 @@ class Mailbox(models.Model):
 class EnrollManager(models.Manager):
     ''' Enroll Manager '''
 
-    def provide_activate(self,mailbox):
+    def provide_activate(self,mailbox,group,
+            viewname="paloma_enroll",absolute=lambda x : x):
         ''' Activation     
             :param mailbox: Mailbox model instance
         '''
-        if mailbox.enroll==None:
-            ret = Enroll(mailbox=mailbox)
-        else:
+        try:
             ret = mailbox.enroll
+        except:
+            ret = Enroll(mailbox=mailbox,group=group)
 
         ret.enroll_type = "activate" 
+        ret.secret = create_auto_secret()
+        ret.url = absolute(
+                    reverse(viewname,
+                        kwargs={"command":"activate","secret": ret.secret,})
+                  )
         ret.dt_expire=now() + timedelta(minutes=3)      #:TODO
         ret.save()
         return ret
 
-    def provide_signin(self,mailbox):
+    def provide_signin(self,mailbox,group,absolute=lambda x: x):
         ''' Password reset or.. 
             :param mailbox: Mailbox model instance
         '''
         if mailbox.enroll==None:
-            ret = Enroll(mailbox=mailbox)
+            ret = Enroll(mailbox=mailbox,group=group)
         else:
             ret = mailbox.enroll
 
@@ -197,7 +203,9 @@ class EnrollManager(models.Manager):
         ret.save()
         return ret
 
-    def provide_invite(self,group,inviter):
+    def provide_invite(self,group,inviter,absolute=lambda x:x):
+        ''' Invite
+        '''
         ret = Enroll(group=group,inviter=inviter)  
         ret.enroll_type = "invite" 
         ret.dt_expire=now() + timedelta(minutes=3)      #:TODO
@@ -250,6 +258,10 @@ class Enroll(models.Model):
     ''' Short Secret
     '''
 
+    url = models.CharField(u'URL for notice',max_length=200,default=None,null=True,blank=True)
+    ''' URL for notice '''
+
+
     dt_expire =   models.DateTimeField(u'Secrete Expired'  ,
                                 null=True, blank=True, default=None,
                                 help_text=u'Secrete Expired', )
@@ -266,6 +278,10 @@ class Enroll(models.Model):
     ''' Commit Datetime'''
     
     objects = EnrollManager()
+
+    def notice(self):
+        print self.group.owner.notice_set()
+        
 
     def activate(self,secret):
         pass

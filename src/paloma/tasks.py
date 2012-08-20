@@ -51,7 +51,7 @@ def enqueue_email_task(recipient,sender,journal_id):
             if task.dt_expire != None:
                 #: Expired EmalTask will be deleted by a background process.
                 task.dt_expire = nt
-                task.save()
+                tas.save()
             return True
     except Exception,e:
         print e 

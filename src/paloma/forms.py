@@ -4,7 +4,7 @@ from django import forms
 
 from paloma.models import Group
 
-class EnrollSignupForm(forms.Form):
+class SignUpMailForm(forms.Form):
     ''' Enroll Signup '''
     group = forms.ModelChoiceField(required = True, 
                     queryset = Group.objects.order_by('owner'))

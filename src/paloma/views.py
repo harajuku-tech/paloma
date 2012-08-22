@@ -2,11 +2,59 @@
 from django.core.urlresolvers import reverse
 from django.shortcuts import render_to_response,redirect
 from django import template
+from django.views.generic.edit import FormView
 
 from paloma.models import Group
-from paloma.forms import EnrollSignupForm
+from paloma.forms import SignUpMailForm
 from paloma.actions import EnrollAction
 import sys
+
+
+class SignUpMailView(FormView):
+    ''' Sign Up via Email
+    '''
+    template_name = "paloma/signup/mail.html" 
+    form_class = SignUpMailForm 
+
+    def get(self, *args, **kwargs):
+        ''' GET '''
+        if self.request.user.is_authenticated():
+            #: TODO: to something ....
+            pass
+
+        return super(SignUpMailView, self).get(*args, **kwargs)
+
+        
+    def post(self, *args, **kwargs):
+        ''' POST '''
+        #: DEFAULT
+        return super(SignUpMailView, self).post(*args, **kwargs)
+
+    def get_initial(self):
+        ''' initial '''
+        return super(SignUpMailView, self).get_initial()
+
+    def get_context_data(self, **kwargs):
+        ''' Context , to the template'''
+        ctx = kwargs
+        ctx.update({
+        })
+        return ctx
+    
+    def form_valid(self, form):
+        ''' When valid.
+        ''' 
+        e = EnrollAction.provide_signup( form.cleaned_data['group'] )
+        email=e.signup_email()
+        #: normatli redirect
+        #: return redirect(self.get_success_url())
+        return self.render_to_response(self.get_context_data(email=email,form=form))
+
+    def form_invalid(self, form):
+        ''' When INvalid
+        '''
+        return super(SignUpMailView,self).form_invalid(form)
+
 
 def u(view_name,args=[],kwargs={},absolute=lambda x: x ):
     return absolute( reverse (view_name, args=args,kwargs=kwargs ) )
@@ -18,22 +66,12 @@ def signin(request):
     return render_to_response("paloma/signin.html",{},
                         context_instance=template.RequestContext(request),)
 
-def signup(request):
-    """ Sign Up """
-    email = None
-    form = None
-    if request.method=="POST":
-        form = EnrollSignupForm(request.POST) 
-        if form.is_valid():
-            e = EnrollAction.provide_signup( form.cleaned_data['group'] )
-            email=e.signup_email()
-    else:
-        form = EnrollSignupForm()
-        groups= Group.objects.order_by('owner')
-    return render_to_response("paloma/signup.html",
-                        {'email':email,'form':form,},
+def signup_form(request):
+    ''' signup via web form
+    '''
+    return render_to_response("paloma/signup/form.html",
+                        {},
                         context_instance=template.RequestContext(request),)
-
 
 def enroll(request,command,secret):
     from django import template

@@ -141,24 +141,23 @@ def signup_form(request):
                         context_instance=template.RequestContext(request),)
 
 def enroll(request,command,secret):
-    from django import template
-    from django.http import HttpResponse
+    result = "default"
+    templates = "paloma/enroll/%s/%s.html"
+    user = None 
+    error = None
 
-    print sys.argv
-    return HttpResponse(
-        template.Template("""
-        <html><head><title>Paloma Enroll</title></head> <body> <h1> Paloma Enroll</h1>
-            {{ url     }} <br/>
-            {{ aurl     }} <br/>
-            {{ command }} <br/>
-            {{ secret  }} <br/>
-        """
-        ).render( template.RequestContext(request,
-                {'command':command,'secret':secret,
-#                 'url' : request.build_absolute_uri('/o/my/god'),
-#                 'url' : request.build_absolute_uri('/'),
-                  'url' : u("paloma_enroll",kwargs={"command":"hoge","secret": "xxxx" },),
-                  'aurl' : u("paloma_enroll",kwargs={"command":"hoge","secret": "xxxx" },
-                        absolute=request.build_absolute_uri),
-                }) )
-    )
+    if command == "activate":
+        enroll = EnrollAction(request).activate(secret)
+        if enroll == None:
+            result ="error" 
+            error = "invalid url to activate" 
+        user = enroll.mailbox.user
+    else:
+        result,error = "error", "command unknown"
+         
+
+    return render_to_response(
+        templates % ( command,result ),
+        { "user": user , "error" : error },
+        context_instance=template.RequestContext(request),)
+        

@@ -159,69 +159,7 @@ class Mailbox(models.Model):
 
 class EnrollManager(models.Manager):
     ''' Enroll Manager '''
-
-    def provide_activate(self,mailbox,group,
-            viewname="paloma_enroll",absolute=lambda x : x):
-        ''' Activation     
-            :param mailbox: Mailbox model instance
-        '''
-        try:
-            ret = mailbox.enroll
-        except:
-            ret = Enroll(mailbox=mailbox,group=group)
-
-        ret.enroll_type = "activate" 
-        ret.secret = create_auto_secret()
-        ret.url = absolute(
-                    reverse(viewname,
-                        kwargs={"command":"activate","secret": ret.secret,})
-                  )
-        ret.dt_expire=now() + timedelta(minutes=3)      #:TODO
-        ret.save()
-        return ret
-
-    def provide_signin(self,mailbox,group,
-            viewname="paloma_enroll",absolute=lambda x: x):
-        ''' Password reset or.. 
-            :param mailbox: Mailbox model instance
-        '''
-        try:
-            ret = mailbox.enroll
-        except:
-            ret = Enroll(mailbox=mailbox,group=group)
-
-        ret.enroll_type = "signin" 
-        ret.secret = create_auto_secret()
-        ret.url = absolute(
-                    reverse(viewname,
-                        kwargs={"command":"signin","secret": ret.secret,})
-                  )
-        ret.dt_expire=now() + timedelta(minutes=3)      #:TODO
-        ret.save()
-        return ret
-
-    def provide_signup(self,group):
-        ''' Sing Up  
-        '''
-        ret = Enroll(group=group)           #:Newly created 
-        ret.enroll_type = "signup" 
-        ret.dt_expire=now() + timedelta(minutes=3)      #:TODO
-        ret.save()
-        return ret
-
-    def provide_invite(self,group,inviter,
-                        viewname="paloma_enroll",absolute=lambda x:x):
-        ''' Invite
-        '''
-        ret = Enroll(group=group,inviter=inviter)  
-        ret.enroll_type = "invite" 
-        ret.dt_expire=now() + timedelta(minutes=3)      #:TODO
-        ret.url = absolute(
-                    reverse(viewname,
-                        kwargs={"command":"invite","secret": ret.secret,})
-                  )
-        ret.save()
-        return ret
+    pass
 
 ENROLL_TYPE = (
                 ('activate','activate'),
@@ -240,6 +178,7 @@ class Enroll(models.Model):
     '''
 
     mailbox= models.OneToOneField(Mailbox,verbose_name=u'Mailbox' 
+                    ,on_delete =models.SET_NULL
                     ,null=True,default=None,blank=True)
     ''' Mailbox '''
 
@@ -292,7 +231,23 @@ class Enroll(models.Model):
 
     def notice(self):
         print self.group.owner.notice_set()
-        
+
+    def is_open(self,dt_now=None):
+        ''' check if this is open status or not
+        '''
+        dt_now =dt_now if dt_now else now()
+
+        return  ( self.dt_commit == None ) and \
+                ( self.dt_expire > dt_now ) and  \
+                ( self.mailbox != None ) and  \
+                ( self.group != None )
+         
+    def close(self):
+        ''' close this enroll management
+        '''
+        self.dt_commit = now()
+        self.save()
+
     def signup_email(self):
         return "%s-signup-%s@%s" % (
                     self.group.symbol ,

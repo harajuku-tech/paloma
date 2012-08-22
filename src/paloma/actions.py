@@ -154,3 +154,21 @@ class EnrollAction(Action):
         #: update time
         e.dt_try = now()
         e.save() 
+
+    def activate(self,secret):
+        ''' Activate account '''
+        ret = Enroll.objects.get(enroll_type = "activate",
+                                secret = secret )
+        if ret.is_open() ==False:
+            return None
+        #:User
+        ret.mailbox.user.is_active = True
+        ret.mailbox.user.save()
+
+        #:Mailbox
+        ret.mailbox.is_active=True 
+        ret.mailbox.save()
+
+        ret.close()
+
+        return ret

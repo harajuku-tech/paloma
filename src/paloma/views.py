@@ -5,7 +5,7 @@ from django import template
 from django.views.generic.edit import FormView
 
 from paloma.models import Group
-from paloma.forms import SignUpMailForm
+from paloma.forms import SignUpMailForm,SignUpWebForm,SignUpWebPreviewForm
 from paloma.actions import EnrollAction
 import sys
 
@@ -54,6 +54,75 @@ class SignUpMailView(FormView):
         ''' When INvalid
         '''
         return super(SignUpMailView,self).form_invalid(form)
+
+class SignUpWebView(FormView):
+    ''' Sign Up via Web 
+    '''
+    template_name = "paloma/signup/web/default.html" 
+    form_class = SignUpWebForm 
+    command = "default"
+
+    def get(self,request, **kwargs):
+        ''' GET '''
+        if self.request.user.is_authenticated():
+            #: TODO: to something ....
+            pass
+
+        return super(SignUpWebView, self).get(request, **kwargs)
+
+        
+    def post(self, request, **kwargs):
+        ''' POST '''
+        #: DEFAULT
+        print type(request),kwargs
+        print request.POST
+
+        if request.POST.has_key('preview'):
+            self.form_class = SignUpWebPreviewForm
+            self.template_name = "paloma/signup/web/preview.html" 
+            self.command="preview"
+        elif request.POST.has_key('reedit'): 
+            self.form_class = SignUpWebForm
+            self.template_name = "paloma/signup/web/default.html" 
+            self.command="reedit"
+        elif request.POST.has_key('commit'):
+            self.template_name = "paloma/signup/web/commit.html" 
+            self.command="commit"
+            
+        return super(SignUpWebView, self).post(request, **kwargs)
+
+    def get_initial(self):
+        ''' initial '''
+        return super(SignUpWebView, self).get_initial()
+
+    def get_context_data(self, **kwargs):
+        ''' Context , to the template'''
+        ctx = kwargs
+        ctx.update({
+        })
+        return ctx
+    
+    def form_valid(self, form):
+        ''' When valid.
+        ''' 
+        if self.command == "commit":
+            EnrollAction.enroll_by_web(
+                form.cleaned_data['username']       ,
+                form.cleaned_data['password']       ,
+                form.cleaned_data['email']       ,
+                form.cleaned_data['group']       ,
+            )
+            
+        #:return redirect(self.get_success_url())
+        return self.render_to_response(self.get_context_data(form=form))
+
+    def form_invalid(self, form):
+        ''' When INvalid
+        '''
+        form = self.get_form( SignUpWebForm )   #: Re Edit anyway
+        self.template_name = "paloma/signup/web/default.html" 
+
+        return super(SignUpWebView,self).form_invalid(form)
 
 
 def u(view_name,args=[],kwargs={},absolute=lambda x: x ):

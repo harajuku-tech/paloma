@@ -97,6 +97,23 @@ class EnrollAction:
         return ret
 
     @classmethod
+    def enroll_by_web(cls,username,password,email,group ):
+        ''' enroll by web
+        '''
+        user = User.objects.create_user(username,email,password)
+        #: create MailBox bound to the Django User  
+        mailbox = Mailbox(user =user,
+                        address =email,
+                        is_active =False,
+                       ) 
+        mailbox.save()
+
+        #: add group  to the Mailbox
+        mailbox.groups.add(group)
+
+        #:Sending Greeting Email
+        
+    @classmethod
     def enroll_by_mail(cls,recipient,sender,journal_id,key):
         '''  enroll by email
         '''

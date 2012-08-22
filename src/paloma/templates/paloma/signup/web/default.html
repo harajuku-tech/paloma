@@ -1,0 +1,10 @@
+
+<form method="post"> {% csrf_token %}
+    {{ form.username }} <br/>
+    {{ form.password}} <br/>
+    {{ form.password_confirm}} <br/>
+    {{ form.email}} <br/>
+    {{ form.group}} <br/>
+    
+    <input type="submit" name="preview" value="Preview" />
+</form>

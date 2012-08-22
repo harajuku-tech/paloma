@@ -46,5 +46,6 @@ CI_RESTART()
 {
     sudo /etc/init.d/paloma stop
     sleep 1
+    mv /tmp/celery.log /tmp/celery.1.log
     sudo /etc/init.d/paloma start
 }

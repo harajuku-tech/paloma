@@ -6,6 +6,7 @@ from django.template import Template,Context
 from celery.task import task
 
 from paloma.models import Schedule,Group,Mailbox,Message,EmailTask
+from paloma.actions import EnrollAction
 
 CONFIG = getattr(settings, 'CELERY_EMAIL_TASK_CONFIG', {})
 
@@ -44,7 +45,7 @@ def enqueue_email_task(recipient,sender,journal_id):
     try:
         task = EmailTask.objects.get(email=recipient )
         nt = now()
-        print nt,task.dt_expire,(nt < task.dt_expire )
+#        print nt,task.dt_expire,(nt < task.dt_expire )
         if task.dt_expire == None or task.dt_expire > nt: 
             call_task_by_name(task.task_module,task.task_name,
                     recipient,sender,journal_id,task.task_key)
@@ -69,8 +70,9 @@ def call_task_by_name(mod_name,task_name,*args,**kwargs):
 def enroll_by_mail(recipient,sender,journal_id,key):
     """  enroll by email
     """
-    print "Enroll by mail",recipient,sender
-
+    print "Enroll by mail",recipient,sender,journal_id,key
+    EnrollAction.enroll_by_mail(recipient,sender,journal_id,key)
+    
 @task
 def reset_by_mail(recipient,sender,journal_id,key):
     """ reset user account by email

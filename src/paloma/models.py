@@ -472,24 +472,25 @@ class Journal(models.Model):
 
 
 class EmailTaskManager(models.Manager):
-    def enqueue(self,recipient,sender,journal_id):
-        """ Enqueue a email task """
-        try:
-            task = self.get(email=recipient )
-            nt = now()
-            if task.dt_expire == None or task.dt_expire > nt:
-                call_task_by_name(task_module,task_name,
-                        recipient,sender,journal_id,task.id )
-                if task.dt_expire != None:
-                    #: Expired EmalTask will be deleted by a background process.
-                    task.dt_expire = nt
-                    taks.save()
-                return True
-        except Exception,e:
-            print e 
-            pass
-
-        return False
+    ''' EmailTaskManager'''
+#    def enqueue(self,recipient,sender,journal_id):
+#        """ Enqueue a email task """
+#        try:
+#            task = self.get(email=recipient )
+#            nt = now()
+#            if task.dt_expire == None or task.dt_expire > nt:
+#                call_task_by_name(task_module,task_name,
+#                        recipient,sender,journal_id,task.id )
+#                if task.dt_expire != None:
+#                    #: Expired EmalTask will be deleted by a background process.
+#                    task.dt_expire = nt
+#                    taks.save()
+#                return True
+#        except Exception,e:
+#            print e 
+#            pass
+#
+#        return False
 
 class EmailTask(models.Model):
     """ Email Task """

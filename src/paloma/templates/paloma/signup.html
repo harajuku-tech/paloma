@@ -1,1 +1,10 @@
 <h1>Sign Up </h1>
+
+{% if email %}
+    <a href="mailto:{{email}}">Mail to Sign Up</a>
+{% else %}
+<form method="post" > {% csrf_token %}
+    {{form.group}}
+  <input type="submit" name="submit" value="Apply" />
+</form>
+{% endif %}

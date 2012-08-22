@@ -3,6 +3,9 @@ from django.core.urlresolvers import reverse
 from django.shortcuts import render_to_response,redirect
 from django import template
 
+from paloma.models import Group
+from paloma.forms import EnrollSignupForm
+from paloma.actions import EnrollAction
 import sys
 
 def u(view_name,args=[],kwargs={},absolute=lambda x: x ):
@@ -17,7 +20,18 @@ def signin(request):
 
 def signup(request):
     """ Sign Up """
-    return render_to_response("paloma/signup.html",{},
+    email = None
+    form = None
+    if request.method=="POST":
+        form = EnrollSignupForm(request.POST) 
+        if form.is_valid():
+            e = EnrollAction.provide_signup( form.cleaned_data['group'] )
+            email=e.signup_email()
+    else:
+        form = EnrollSignupForm()
+        groups= Group.objects.order_by('owner')
+    return render_to_response("paloma/signup.html",
+                        {'email':email,'form':form,},
                         context_instance=template.RequestContext(request),)
 
 

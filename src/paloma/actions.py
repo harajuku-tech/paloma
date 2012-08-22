@@ -17,12 +17,22 @@ import sys,traceback
 from paloma.utils import create_auto_secret,create_auto_short_secret
 from paloma.models import Enroll,EmailTask,Mailbox
 
-class EnrollAction:
+class Action(object):
+    def __init__(self,request=None):
+        ''' 
+            :param request: WSGI request
+        '''  
+        self.request = request
+
+    def absolute(self,url):
+        ''' absoute url '''
+        return self.request.build_absolute_uri(url)  \
+                if self.request else url
+
+class EnrollAction(Action):
     ''' Enroll Action'''
 
-    @classmethod
-    def provide_activate(cls,mailbox,group,
-            viewname="paloma_enroll",absolute=lambda x : x):
+    def provide_activate(self,mailbox,group, viewname="paloma_enroll" ):
         ''' Activation     
             :param mailbox: Mailbox model instance
         '''
@@ -33,17 +43,16 @@ class EnrollAction:
 
         ret.enroll_type = "activate" 
         ret.secret = create_auto_secret()
-        ret.url = absolute(
+        ret.url = self.absolute(
                     reverse(viewname,
                         kwargs={"command":"activate","secret": ret.secret,})
                   )
+        print ret.url
         ret.dt_expire=now() + timedelta(minutes=3)      #:TODO
         ret.save()
         return ret
 
-    @classmethod
-    def provide_signin(cls,mailbox,group,
-            viewname="paloma_enroll",absolute=lambda x: x):
+    def provide_signin(self,mailbox,group, viewname="paloma_enroll"):
         ''' Password reset or.. 
             :param mailbox: Mailbox model instance
         '''
@@ -54,7 +63,7 @@ class EnrollAction:
 
         ret.enroll_type = "signin" 
         ret.secret = create_auto_secret()
-        ret.url = absolute(
+        ret.url = self.absolute(
                     reverse(viewname,
                         kwargs={"command":"signin","secret": ret.secret,})
                   )
@@ -62,8 +71,7 @@ class EnrollAction:
         ret.save()
         return ret
 
-    @classmethod
-    def provide_signup(cls,group):
+    def provide_signup(self,group):
         ''' Sign Up  
         '''
         ret = Enroll(group=group)           #:Newly created 
@@ -82,23 +90,21 @@ class EnrollAction:
 
         return ret
 
-    @classmethod
-    def provide_invite(cls,group,inviter,
+    def provide_invite(self,group,inviter,
                         viewname="paloma_enroll",absolute=lambda x:x):
         ''' Invite
         '''
         ret = Enroll(group=group,inviter=inviter)  
         ret.enroll_type = "invite" 
         ret.dt_expire=now() + timedelta(minutes=3)      #:TODO
-        ret.url = absolute(
+        ret.url = self.absolute(
                     reverse(viewname,
                         kwargs={"command":"invite","secret": ret.secret,})
                   )
         ret.save()
         return ret
 
-    @classmethod
-    def enroll_by_web(cls,username,password,email,group ):
+    def enroll_by_web(self,username,password,email,group ):
         ''' enroll by web
         '''
         #: System user
@@ -115,7 +121,7 @@ class EnrollAction:
         mailbox.groups.add(group)
 
         #: for activateion
-        el = cls.provide_activate(mailbox,group)
+        el = self.provide_activate(mailbox,group)
 
         #:Sending Greeting Email
         qs = group.owner.notice_set.filter(name="activate")
@@ -123,8 +129,7 @@ class EnrollAction:
             (subject,text ) = qs[0].render(enroll=el, group=group )
             send_mail(subject,text, group.main_address , [ mailbox.address ])
         
-    @classmethod
-    def enroll_by_mail(cls,recipient,sender,journal_id,key):
+    def enroll_by_mail(self,recipient,sender,journal_id,key):
         '''  enroll by email
         '''
         e =  Enroll.objects.get(id=key)

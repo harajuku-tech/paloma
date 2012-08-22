@@ -74,8 +74,6 @@ class SignUpWebView(FormView):
     def post(self, request, **kwargs):
         ''' POST '''
         #: DEFAULT
-        print type(request),kwargs
-        print request.POST
 
         if request.POST.has_key('preview'):
             self.form_class = SignUpWebPreviewForm
@@ -106,7 +104,7 @@ class SignUpWebView(FormView):
         ''' When valid.
         ''' 
         if self.command == "commit":
-            EnrollAction.enroll_by_web(
+            EnrollAction(self.request).enroll_by_web(
                 form.cleaned_data['username']       ,
                 form.cleaned_data['password']       ,
                 form.cleaned_data['email']       ,
@@ -160,6 +158,7 @@ def enroll(request,command,secret):
 #                 'url' : request.build_absolute_uri('/o/my/god'),
 #                 'url' : request.build_absolute_uri('/'),
                   'url' : u("paloma_enroll",kwargs={"command":"hoge","secret": "xxxx" },),
-                  'aurl' : u("paloma_enroll",kwargs={"command":"hoge","secret": "xxxx" },absolute=request.build_absolute_uri),
+                  'aurl' : u("paloma_enroll",kwargs={"command":"hoge","secret": "xxxx" },
+                        absolute=request.build_absolute_uri),
                 }) )
     )

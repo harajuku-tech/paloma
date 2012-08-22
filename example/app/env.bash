@@ -49,3 +49,7 @@ CI_RESTART()
     mv /tmp/celery.log /tmp/celery.1.log
     sudo /etc/init.d/paloma start
 }
+PL_WITHDRAW()
+{
+    python ../manage.py membership withdraw --username=$1
+}

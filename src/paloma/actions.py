@@ -7,6 +7,7 @@ from django.contrib.auth import authenticate
 from django.core.urlresolvers import reverse
 from django.utils.translation import ugettext_lazy as _
 from django.utils.timezone import now
+from django.core.mail import send_mail
 
 from django.template import Template,Context
 
@@ -100,7 +101,9 @@ class EnrollAction:
     def enroll_by_web(cls,username,password,email,group ):
         ''' enroll by web
         '''
+        #: System user
         user = User.objects.create_user(username,email,password)
+
         #: create MailBox bound to the Django User  
         mailbox = Mailbox(user =user,
                         address =email,
@@ -111,7 +114,14 @@ class EnrollAction:
         #: add group  to the Mailbox
         mailbox.groups.add(group)
 
+        #: for activateion
+        el = cls.provide_activate(mailbox,group)
+
         #:Sending Greeting Email
+        qs = group.owner.notice_set.filter(name="activate")
+        if qs.count() > 0 :
+            (subject,text ) = qs[0].render(enroll=el, group=group )
+            send_mail(subject,text, group.main_address , [ mailbox.address ])
         
     @classmethod
     def enroll_by_mail(cls,recipient,sender,journal_id,key):

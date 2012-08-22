@@ -85,6 +85,7 @@ class EnrollAdmin(admin.ModelAdmin):
                     'url','secret','short_secret',
                     'dt_expire','dt_try', 'dt_commit' )
     list_filter=('enroll_type',)
+    
 admin.site.register(Enroll,EnrollAdmin)
 
 ### Notice 

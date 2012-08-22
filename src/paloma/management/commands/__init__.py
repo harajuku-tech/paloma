@@ -21,7 +21,7 @@ class GenericCommand(BaseCommand):
             action='store',
             dest='id',
             default=None,
-            help=u'message id'),
+            help=u'entity id(message,user,...'),
 
         make_option('-s','--sync',
             action='store_true',

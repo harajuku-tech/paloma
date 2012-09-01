@@ -230,6 +230,16 @@ INSTALLED_APPS +=('django_extensions',)  #:  tools for django-extensions
 import applogs
 applogs.config(LOGGING)
 
+# --- Paloma Configuration
+#
+CELERY_EMAIL_BACKEND='paloma.backends.PalomaEmailBackend'
+#
+from kombu import Exchange, Queue
+CELERY_DEFAULT_QUEUE = 'paloma'
+CELERY_QUEUES = ( 
+    Queue('paloma', Exchange('paloma'), routing_key='paloma'),
+)
+ 
 # -- sample app
 
 INSTALLED_APPS +=('app.foods',)  #:  Sammple application for Paloma

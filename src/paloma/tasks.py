@@ -8,10 +8,10 @@ from celery.task import task
 from paloma.models import Schedule,Group,Mailbox,Message,EmailTask
 from paloma.actions import EnrollAction
 
-CONFIG = getattr(settings, 'CELERY_EMAIL_TASK_CONFIG', {})
+CONFIG = getattr(settings, 'PALOMA_EMAIL_TASK_CONFIG', {})
 
 #: Actual Backend for sending email
-BACKEND = getattr(settings, 'CELERY_EMAIL_BACKEND',
+BACKEND = getattr(settings, 'SMTP_EMAIL_BACKEND',
                   'django.core.mail.backends.smtp.EmailBackend')
 
 #TASK_CONFIG = {
@@ -26,6 +26,11 @@ BACKEND = getattr(settings, 'CELERY_EMAIL_BACKEND',
 # but that makes serialized message bigger.
 @task(serializer='pickle')
 def send_email(message, **kwargs):
+    ''' 
+    .. todo::
+        - change "sennder address" for VERP 
+        - kwargs should have "return_path" .
+    '''
     try:
         logger = send_email.get_logger()
         conn = get_connection(backend=BACKEND)

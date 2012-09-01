@@ -15,3 +15,18 @@ def send_mail_from_file(stream):
         stream = open(stream)
     msg = message_from_file(stream)
     send_mail(msg['Subject'],str(msg),msg['From'],msg['To'].split(',') )
+
+#def send_mail(subject, message, from_email, recipient_list,
+#              fail_silently=False, auth_user=None, auth_password=None,
+#              connection=None,**kwargs):
+#    """Extended Djang Sending Email Wrapper 
+#
+#        :param kwargs: dict extended parameter
+#    """
+#    connection = connection or get_connection(username=auth_user,
+#                                    password=auth_password,
+#                                    fail_silently=fail_silently)
+#    return EmailMessage(subject, message, from_email, recipient_list,
+#                        connection=connection,**kwargs).send()
+#
+

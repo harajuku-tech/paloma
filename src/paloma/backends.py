@@ -4,16 +4,17 @@
 '''
 from django.conf import settings
 from django.core.mail.backends.base import BaseEmailBackend
+from django.core.mail.backends.smtp import EmailBackend as DjangoEmailBackend
+from django.core.mail.message import sanitize_address
 from email.utils import parseaddr
 
 from paloma.tasks import send_email,bounce
 
 from django.conf import settings
 
-class CeleryEmailBackend(BaseEmailBackend):
+class PalomaEmailBackend(BaseEmailBackend):
     ''' A Django Email Backend to send emails thru Celery Task queue.
     ''' 
-
     def send_messages(self, email_messages, **kwargs):
         ''' Django Email Backend API - send_messages
 
@@ -23,7 +24,7 @@ class CeleryEmailBackend(BaseEmailBackend):
         '''
         results = []
         for msg in email_messages:
-            results.append(send_email.delay(msg, **kwargs))
+            results.append(send_email.delay(msg, **kwargs)) #:asynchronous send_email 
         return results
 
 class JournalEmailBackend(BaseEmailBackend):
@@ -49,3 +50,23 @@ class JournalEmailBackend(BaseEmailBackend):
             return 1
         except Exception,e:
             return 0
+
+class SmtpEmailBackend(DjangoEmailBackend):
+    ''' handling SMTP 
+    '''
+    def _send(self, email_message):
+        """A helper method that does the actual sending."""
+        if not email_message.recipients():
+            return False
+        from_email = sanitize_address(email_message.from_email, email_message.encoding)
+        recipients = [sanitize_address(addr, email_message.encoding)
+                      for addr in email_message.recipients()]
+        try:
+            #: connection: smtplib.SMTP
+            self.connection.sendmail(from_email, recipients,
+                    email_message.message().as_string())
+        except:
+            if not self.fail_silently:
+                raise
+            return False
+        return True

@@ -170,17 +170,7 @@ LOGGING = {
     }
 }
 
-########
-
-# ---- Custom Configuration 
-
-# - paloma
-
-INSTALLED_APPS +=('paloma',)  #: this project.
-
-# - mandb for MySQL command shortcuts
-
-INSTALLED_APPS +=('mandb',)  #:  tools for MySQL
+######## Custom Configuration 
 
 # - south for data migration
 if 'test' not in sys.argv:
@@ -207,20 +197,36 @@ CELERYD_STATE_DB=os.path.join(PROJECT_DIR,'celery_state.db')
 import djcelery
 djcelery.setup_loader()
 
-# - paloma for mail transfer agents
-if 'test' not in sys.argv:
-    EMAIL_BACKEND = 'paloma.backends.CeleryEmailBackend'
-#    EMAIL_BACKEND = 'paloma.backends.JournalEmailBackend'
-else:
-    #: in testing. save messages directory to Journal model
-    EMAIL_BACKEND = 'paloma.backends.JournalEmailBackend'
-
-PALOMA_EMAIL_BACKEND = 'django.core.mail.backends.locmem.EmailBackend'
 #CELERY_EMAIL_TASK_CONFIG = {
 #    'queue' : 'django_email',
 #    'delivery_mode' : 1, # non persistent
 #    'rate_limit' : '50/m', # 50 emails per minute
 #}
+
+# --- Paloma Configuration
+#
+INSTALLED_APPS +=('paloma',)  #: this project.
+#
+SMTP_EMAIL_BACKEND='paloma.backends.SmtpEmailBackend'
+#
+from kombu import Exchange, Queue
+CELERY_DEFAULT_QUEUE = 'paloma'
+CELERY_QUEUES = ( 
+    Queue('paloma', Exchange('paloma'), routing_key='paloma'),
+)
+
+# - paloma for mail transfer agents
+if 'test' not in sys.argv:
+    EMAIL_BACKEND = 'paloma.backends.PalomaEmailBackend'
+#    EMAIL_BACKEND = 'paloma.backends.JournalEmailBackend'
+else:
+    #: in testing. save messages directory to Journal model
+    EMAIL_BACKEND = 'paloma.backends.JournalEmailBackend'
+
+ 
+# -- sample app
+
+INSTALLED_APPS +=('app.foods',)  #:  Sammple application for Paloma
 
 # -- django-extensinon
 
@@ -230,16 +236,7 @@ INSTALLED_APPS +=('django_extensions',)  #:  tools for django-extensions
 import applogs
 applogs.config(LOGGING)
 
-# --- Paloma Configuration
-#
-CELERY_EMAIL_BACKEND='paloma.backends.PalomaEmailBackend'
-#
-from kombu import Exchange, Queue
-CELERY_DEFAULT_QUEUE = 'paloma'
-CELERY_QUEUES = ( 
-    Queue('paloma', Exchange('paloma'), routing_key='paloma'),
-)
- 
-# -- sample app
+# - mandb for MySQL command shortcuts
 
-INSTALLED_APPS +=('app.foods',)  #:  Sammple application for Paloma
+INSTALLED_APPS +=('mandb',)  #:  tools for MySQL
+

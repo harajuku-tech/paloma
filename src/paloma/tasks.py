@@ -173,3 +173,4 @@ def generate_message(sender,schedule_id,group_id, mailbox_id ):
 
     except Exception,e:
         raise e 
+

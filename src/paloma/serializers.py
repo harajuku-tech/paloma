@@ -1,10 +1,23 @@
 # -*- coding: utf-8 -*-
 
+''' register_paloma: Experimental Celery Custom Serializer
+
+call this in tass.py
+
+>>> from paloma.serializers import register_paloma
+>>> register_paloma()
+>>> @task(serializer='paloma')
+>>> def your_task(model_obj):
+...     print "do something for model_obj"
+
+
+'''
+
 from kombu.serialization import registry
 from paloma.utils import to_model_signature,from_model_signature
 
 def register_paloma():
-    ''' Experimental;Celery Serializer '''
+    ''' Experimental Celery Serializer '''
 
     def encode(task_body):
         ''' Encoder '''

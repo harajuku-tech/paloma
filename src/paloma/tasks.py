@@ -108,7 +108,7 @@ def process_error_mail(recipient,sender,journal_id):
                     schedule__owner__domain = param['domain'])
 
             #:X-Failed-Recipients SHOULD be checked ?
-            assert ( error_address == None || error_address == msg.mailbox.address )
+            assert ( error_address == None or error_address == msg.mailbox.address )
 
             #: increment bounce number
             #: this mailbox will be disabled sometimes later.

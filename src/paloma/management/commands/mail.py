@@ -10,6 +10,7 @@ from optparse import make_option
 from datetime import datetime
 import commands
 import os
+import uuid
 
 class Command(GenericCommand):
     ''' paloma maile management
@@ -37,7 +38,9 @@ class Command(GenericCommand):
         '''　send
 
         '''
-        extra = { "return_path" : options.get('return_path',None) } 
+        extra = { "return_path" : options.get('return_path',None), 
+                  "message_id"  : "paloma-%s" % uuid.uuid1().hex, 
+                } 
         send_mail_from_file( self.open_file(options), **extra )
 
     def handle_trigger(self,*args,**options):

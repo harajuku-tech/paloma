@@ -55,7 +55,12 @@ class SmtpEmailBackend(DjangoEmailBackend):
     ''' handling SMTP 
     '''
     def _send(self, email_message):
-        """A helper method that does the actual sending."""
+        """A helper method that does the actual sending.
+
+            :param email_message: EmaiMesage instance
+            :type  email_message: django.core.mail.message.EmailMessage
+        """
+
         if not email_message.recipients():
             return False
 
@@ -67,10 +72,21 @@ class SmtpEmailBackend(DjangoEmailBackend):
                 , email_message.encoding)
         recipients = [sanitize_address(addr, email_message.encoding)
                       for addr in email_message.recipients()]
+
+        #: Python standard email.message.Message
+        mailobj = email_message.message()
+    
+        #: message_id ->Message-ID
+        if extended.has_key('message_id'):
+            if mailobj.has_key('Message-ID'):
+                mailobj.replace_header('Message-ID',extended['message_id'])
+            else:
+                mailobj.add_header('Message-ID',extended['message_id'])
+
         try:
             #: connection: smtplib.SMTP
-            self.connection.sendmail(from_email, recipients,
-                    email_message.message().as_string())
+            self.connection.sendmail(
+                    from_email, recipients,mailobj.as_string() )
         except:
             if not self.fail_silently:
                 raise

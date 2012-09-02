@@ -15,6 +15,7 @@ from email import message_from_string
 from datetime import datetime,timedelta
 import sys,traceback
 import re
+import uuid
 
 from paloma.utils import create_auto_secret,create_auto_short_secret
 
@@ -397,11 +398,26 @@ class Message(models.Model):
     mailbox= models.ForeignKey(Mailbox,verbose_name=u'Target Mailbox' )
     ''' Target Mailbox'''
 
+    mail_message_id = models.CharField(u'Message ID',max_length=100,db_index=True,unique=True)
+    ''' Mesage-ID header 
+
+        - 'Message-ID: <local-part "@" domain>'
+    '''
+
     text = models.TextField(u'Message Text',default=None,blank=True,null=True)
     ''' Message text '''
     #: TODO: delivery statusm management
 
     objects = MessageManager()
+   
+    def save(self,force_insert=False,force_update=False,*args,**kwargs):         
+        ''' override save() '''
+
+        self.mail_message_id = "<paloma-%d-@%s>" % ( 
+                            self.id, self.schedule.owner.domain )
+
+        super(Message,self).save(force_insert,force_update,*args,**kwargs)
+    
 
 
 class JournalManager(models.Manager):

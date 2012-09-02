@@ -123,7 +123,7 @@ class ScheduleAdmin(admin.ModelAdmin):
 admin.site.register(Schedule,ScheduleAdmin)
 ### Message 
 class MessageAdmin(admin.ModelAdmin):
-    list_display=('schedule','mailbox',)
+    list_display=('schedule','mailbox','mail_message_id',)
 admin.site.register(Message,MessageAdmin)
 
 ### Journal 

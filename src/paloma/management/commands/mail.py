@@ -25,6 +25,11 @@ class Command(GenericCommand):
             default=None,
             help=u'time to trigger'),
 
+        make_option('-r','--return_path',
+            action='store',
+            dest='return_path',
+            default=None,
+            help=u'mailbox to be returned'),
         )
     ''' Command Option '''
 
@@ -32,7 +37,8 @@ class Command(GenericCommand):
         '''　send
 
         '''
-        send_mail_from_file( self.open_file(options) )
+        extra = { "return_path" : options.get('return_path',None) } 
+        send_mail_from_file( self.open_file(options), **extra )
 
     def handle_trigger(self,*args,**options):
         ''' trigger schedule

@@ -58,7 +58,13 @@ class SmtpEmailBackend(DjangoEmailBackend):
         """A helper method that does the actual sending."""
         if not email_message.recipients():
             return False
-        from_email = sanitize_address(email_message.from_email, email_message.encoding)
+
+        #:Extended parameters for SMTP
+        extended = getattr(email_message,"extended",{} )
+         
+        from_email = sanitize_address(
+                extended.get('return_path',None) or email_message.from_email
+                , email_message.encoding)
         recipients = [sanitize_address(addr, email_message.encoding)
                       for addr in email_message.recipients()]
         try:

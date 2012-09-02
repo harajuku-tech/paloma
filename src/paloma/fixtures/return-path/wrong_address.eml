@@ -1,0 +1,43 @@
+Delivered-To: hdknr@ic-tact.co.jp
+Received: by 10.42.166.194 with SMTP id p2cs8586icy;
+        Fri, 22 Jul 2011 15:58:49 -0700 (PDT)
+Received: by 10.68.62.34 with SMTP id v2mr2936755pbr.74.1311375527916;
+        Fri, 22 Jul 2011 15:58:47 -0700 (PDT)
+MIME-Version: 1.0
+Return-Path: <>
+Received: by 10.68.62.34 with SMTP id v2mr3748054pbr.74; Fri, 22 Jul 2011
+ 15:58:47 -0700 (PDT)
+From: Mail Delivery Subsystem <mailer-daemon@googlemail.com>
+To: hdknr@ic-tact.co.jp
+X-Failed-Recipients: post@lafoglia.posterou.com
+Subject: Delivery Status Notification (Failure)
+Message-ID: <bcaec544e99482329d04a8b0682c@google.com>
+Date: Fri, 22 Jul 2011 22:58:47 +0000
+Content-Type: text/plain; charset=ISO-8859-1
+
+Delivery to the following recipient failed permanently:
+
+     post@lafoglia.posterou.com
+
+Technical details of permanent failure: 
+The recipient server did not accept our requests to connect. Learn more at http://mail.google.com/support/bin/answer.py?answer=7720 
+[lafoglia.posterou.com (1): Connection timed out]
+
+----- Original message -----
+
+Received: by 10.68.62.34 with SMTP id v2mr1019332pbr.74.1311103446457;
+        Tue, 19 Jul 2011 12:24:06 -0700 (PDT)
+Return-Path: <hdknr@ic-tact.co.jp>
+Received: from [192.168.1.108] (p1126-ipbf2404marunouchi.tokyo.ocn.ne.jp [122.18.119.126])
+        by mx.google.com with ESMTPS id x1sm3182036pbb.34.2011.07.19.12.24.02
+        (version=TLSv1/SSLv3 cipher=OTHER);
+        Tue, 19 Jul 2011 12:24:04 -0700 (PDT)
+Subject: BrowserID : UA is the proxy between OP and RP
+From: Hdknr TACT <hdknr@ic-tact.co.jp>
+Content-Type: multipart/mixed; boundary=Apple-Mail-1--63726795
+Message-Id: <8785CF3D-4315-4FEB-8D45-7343464A51DD@ic-tact.co.jp>
+Date: Wed, 20 Jul 2011 04:23:58 +0900
+To: "post@lafoglia.posterou.com" <post@lafoglia.posterou.com>
+Content-Transfer-Encoding: 7bit
+Mime-Version: 1.0 (iPad Mail 8J3)
+X-Mailer: iPad Mail (8J3)

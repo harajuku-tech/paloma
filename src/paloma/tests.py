@@ -125,3 +125,17 @@ class BounceTest(TestCase):
             with self.assertRaises(exceptions.TypeError) as cm:
                 print "return_path_from_address(%s)" % str(mail), "=> TypeError"
                 result = return_path_from_address(mail)
+
+    def test_checkmail(self):
+        ''' python ../manage.py test paloma.BounceTest.test_checkmail
+        '''
+        import os
+        filename = "fixtures/return-path/wrong_address.eml"
+        filename = os.path.join( os.path.dirname(os.path.abspath(__file__)),filename )
+
+        from email import message_from_string
+        mobj= message_from_string( open(filename).read() )
+        print dir(mobj)
+        print "keys",mobj.keys()
+        for (k,v) in mobj.items():
+            print k,":",v

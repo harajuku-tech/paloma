@@ -73,6 +73,14 @@ def process_error_mail(recipient,sender,journal_id):
 
         - return True if mail was processed, owtherwise False
 
+        :param recipient: destination mailbox address
+        :type recipient: str
+        :param sender: sender mailbox address
+        :type recipient: str
+        :param journal_id: Journal model id
+        :type journal_id: int
+        :rtype: bool (True : processed, False not processed)
+
     .. todo::
         - update journal error code or error reseon ?
     """
@@ -86,6 +94,33 @@ def process_error_mail(recipient,sender,journal_id):
         param =  return_path_from_address(recipient)
         assert param['message_id'] != ""
         assert param['domain'] != ""
+        
+        try:
+            #: Jourmal mail object
+            journal_msg=Journal.objects.get(id=journal_id).mailobject()
+            error_address= journal_msg.get('X-Failed-Recipients')
+        except:
+            pass
+
+        try:
+            #: Find message
+            msg = Message.objects.get(id=int(param['message_id']),
+                    schedule__owner__domain = param['domain'])
+
+            #:X-Failed-Recipients SHOULD be checked ?
+            assert ( error_address == None || error_address == msg.mailbox.address )
+
+            #: increment bounce number
+            #: this mailbox will be disabled sometimes later.
+            msg.mailbox.bounces = msg.mailbox.bouncds + 1
+            msg.mailbox.save()
+
+            #:
+            return True
+
+        except:
+            pass
+            
     except exceptions.AttributeError,e:
         #:May be normal address..
         #:Other handler will be called.

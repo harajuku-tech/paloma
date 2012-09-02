@@ -10,6 +10,8 @@ from django.utils.timezone import now
 
 from django.template import Template,Context
 
+from email import message_from_string
+
 from datetime import datetime,timedelta
 import sys,traceback
 import re
@@ -427,6 +429,13 @@ class Journal(models.Model):
 
     is_jailed = models.BooleanField(u'Jailed Message',default=False )
     ''' Jailed(Reciepient missing emails have been journaled) if true '''
+
+    def mailobject(self):
+        ''' return mail object
+
+            :rtype: email.message.Message
+        '''
+        return message_from_string(self.text)
 
     class Meta:
         verbose_name=u'Journal'

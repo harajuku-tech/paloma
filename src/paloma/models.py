@@ -16,6 +16,7 @@ from datetime import datetime,timedelta
 import sys,traceback
 import re
 import uuid
+import hashlib
 
 from paloma.utils import create_auto_secret,create_auto_short_secret
 
@@ -413,8 +414,12 @@ class Message(models.Model):
     def save(self,force_insert=False,force_update=False,*args,**kwargs):         
         ''' override save() '''
 
-        self.mail_message_id = "<paloma-%d-@%s>" % ( 
-                            self.id, self.schedule.owner.domain )
+        digest = hashlib.md5('%d%d%s' %( 
+                self.schedule.id,self.mailbox.id,self.mailbox.address )).hexdigest()
+        self.mail_message_id = "<p-%d-%d-%s@%s>" % ( 
+                            self.schedule.id,self.mailbox.id, 
+                                digest[:10],
+                                self.schedule.owner.domain )
 
         super(Message,self).save(force_insert,force_update,*args,**kwargs)
     

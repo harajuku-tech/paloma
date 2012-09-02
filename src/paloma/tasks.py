@@ -5,7 +5,10 @@ from django.template import Template,Context
 
 from celery.task import task
 
-from paloma.models import Schedule,Group,Mailbox,Message,EmailTask
+from paloma.models import (
+        Schedule,Group,Mailbox,Message,EmailTask,
+        default_return_path ,return_path_from_address
+)
 from paloma.actions import EnrollAction
 
 CONFIG = getattr(settings, 'PALOMA_EMAIL_TASK_CONFIG', {})
@@ -65,6 +68,31 @@ def enqueue_email_task(recipient,sender,journal_id):
 
     return False
 
+def process_error_mail(recipient,sender,journal_id):
+    """ Error Mail Checker and Handler
+
+        - return True if mail was processed, owtherwise False
+
+    .. todo::
+        - update journal error code or error reseon ?
+    """
+
+    if recipient in ['',None]:
+        #: Simpley Error Mail!
+        #: TODO: error marking... 
+        return True
+    
+    try:
+        param =  return_path_from_address(recipient)
+        assert param['message_id'] != ""
+        assert param['domain'] != ""
+    except exceptions.AttributeError,e:
+        #:May be normal address..
+        #:Other handler will be called.
+        return False
+         
+    return False
+
 def call_task_by_name(mod_name,task_name,*args,**kwargs):
     """ call task by name """
     
@@ -109,6 +137,9 @@ def bounce(sender,recipient,text,is_jailed=False,*args,**kwawrs):
 
     if is_jailed == False:
         try:
+            #:Erorr Mail Hndler
+            if process_error_mail(recipient,sender,journal.id):
+                return  
             #:EmailTask
             if enqueue_email_task(recipient,sender,journal.id):
                 return

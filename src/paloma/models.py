@@ -12,6 +12,7 @@ from django.template import Template,Context
 
 from datetime import datetime,timedelta
 import sys,traceback
+import re
 
 from paloma.utils import create_auto_secret,create_auto_short_secret
 
@@ -376,7 +377,13 @@ class MessageManager(models.Manager):
         #:
         #: 5. otherwise, do nothing. 
         pass
-    
+
+DEFAULT_RETURN_PATH_RE = r"bcmsg-(?P<message_id>\d+)@(?P<domain>.+)"
+DEFAULT_RETURN_PATH_FORMAT ="bcmsg-%(message_id)s@%(domain)s" 
+
+return_path_from_address = lambda address : re.search(DEFAULT_RETURN_PATH_RE,address).groupdict()
+default_return_path= lambda param :  DEFAULT_RETURN_PATH_FORMAT  % param
+
 class Message(models.Model):
     ''' Actual Delivery 
 

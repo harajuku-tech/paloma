@@ -96,3 +96,32 @@ My First mail'''
         print type(e2)
         #        
         self.assertEqual(e['From'] , e2['From'] )
+
+class BounceTest(TestCase):
+
+    fixtures = ["enroll/auth.json","enroll/paloma.json",]
+
+    def test_returnpath(self):
+        ''' python ../manage.py test paloma.BounceTest.test_returnpath
+        '''
+        import exceptions
+        from paloma.models import default_return_path ,return_path_from_address
+        MSG_FMT="bcmsg-%(message_id)s@%(domain)s"
+
+        param = {'message_id': 3, "domain":"hogehoge.com" }
+
+        return_path = default_return_path(param)
+        result = return_path_from_address(return_path)
+
+        for (k,v) in result.items():
+            self.assertEqual(str(param[k]), v )
+
+        for mail in ['','admin@google.com', ]:
+            with self.assertRaises(exceptions.AttributeError) as cm:
+                print "return_path_from_address(%s)" % str(mail), "=> AttributeError"
+                result = return_path_from_address(mail)
+
+        for mail in [None] :
+            with self.assertRaises(exceptions.TypeError) as cm:
+                print "return_path_from_address(%s)" % str(mail), "=> TypeError"
+                result = return_path_from_address(mail)

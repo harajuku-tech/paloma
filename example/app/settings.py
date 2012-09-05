@@ -183,7 +183,8 @@ if 'test' not in sys.argv:
 INSTALLED_APPS += ('djcelery','djkombu',)
 #: Broker
 #BROKER_URL="django://"
-BROKER_URL = 'amqp://guest:guest@localhost:5672//'
+#BROKER_URL = 'amqp://guest:guest@localhost:5672//'
+BROKER_URL = 'amqp://paloma:paloma@localhost:5672/paloma'
 #BROKER_URL = 'redis://localhost:6379/0'
 #BROKER_URL = 'mongodb://localhost:27017/paloma'
 #

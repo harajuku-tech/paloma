@@ -139,3 +139,26 @@ class BounceTest(TestCase):
         print "keys",mobj.keys()
         for (k,v) in mobj.items():
             print k,":",v
+
+    def test_disable_mailbox(self):
+        ''' python ../manage.py test paloma.BounceTest.test_disable_mailbox
+        '''
+        from paloma.models import Mailbox
+
+        self.failIfEqual(Mailbox.objects.all(),0,"Fixture is wrong. Provide some paloma.models.Message record")
+
+        bounce_th=2 #: bounce threshold
+        Mailbox.objects.all().update(is_active=True,bounces = bounce_th)  
+        
+        self.assertTrue( all( [ m.bounces >= bounce_th for m in Mailbox.objects.all() ] ) )
+        self.assertTrue( all( [ m.is_active for m in Mailbox.objects.all() ] ) )
+        
+        from paloma.tasks import disable_mailbox
+        t =disable_mailbox.apply(kwargs={"bounce_count":bounce_th},)
+        # t = disable_mailbox.subtask([bounce_th]).apply()
+        print t.state,t.result
+        print [ (m.is_active,m.bounces) 
+            for m in Mailbox.objects.filter(bounces__gte=bounce_th) ]
+        self.assertEqual(t.state,u"SUCCESS" )
+
+        self.assertTrue( all( [ m.is_active == False for m in Mailbox.objects.all() ] ) )

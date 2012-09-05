@@ -5,6 +5,8 @@ from django.template import Template,Context
 
 from celery.task import task
 
+import logging
+
 from paloma.models import (
         Schedule,Group,Mailbox,Message,EmailTask,
         default_return_path ,return_path_from_address
@@ -53,7 +55,6 @@ def enqueue_email_task(recipient,sender,journal_id):
     try:
         task = EmailTask.objects.get(email=recipient )
         nt = now()
-#        print nt,task.dt_expire,(nt < task.dt_expire )
         if task.dt_expire == None or task.dt_expire > nt: 
             call_task_by_name(task.task_module,task.task_name,
                     recipient,sender,journal_id,task.task_key)
@@ -112,7 +113,7 @@ def process_error_mail(recipient,sender,journal_id):
 
             #: increment bounce number
             #: this mailbox will be disabled sometimes later.
-            msg.mailbox.bounces = msg.mailbox.bouncds + 1
+            msg.mailbox.bounces = msg.mailbox.bounces+ 1
             msg.mailbox.save()
 
             #:
@@ -155,7 +156,6 @@ def ask_by_mail(recipient,sender,journal_id,key):
 @task
 def bounce(sender,recipient,text,is_jailed=False,*args,**kwawrs):
     """ bounce worker """
-    import email  
     from models import Journal
 
     #: First of all, save messa to the Journal
@@ -169,17 +169,17 @@ def bounce(sender,recipient,text,is_jailed=False,*args,**kwawrs):
         journal.save()
     except Exception,e:
         print e
+    
+    if is_jailed == True:
+        return
 
-    if is_jailed == False:
-        try:
-            #:Erorr Mail Hndler
-            if process_error_mail(recipient,sender,journal.id):
-                return  
-            #:EmailTask
-            if enqueue_email_task(recipient,sender,journal.id):
-                return
-        except Exception,e:
-            print e
+    #:Error Mail Handler 
+    if process_error_mail(recipient,sender,journal.id):
+        return  
+
+    #:EmailTask ( mail registraton ....  )
+    if enqueue_email_task(recipient,sender,journal.id):
+        return
 
 @task
 def trigger_schedule(sender=None):
@@ -245,3 +245,17 @@ def generate_message(sender,schedule_id,group_id, mailbox_id ):
     except Exception,e:
         raise e 
 
+
+@task
+def disable_mailbox(bounce_count=None,*args,**kwargs):
+    '''  
+
+        :param bounce_count:  number of error mail bounced back.
+        :type  bounce_count:  int
+    '''
+    log = disable_mailbox.get_logger()
+
+    if bounce_count:
+        ret = Mailbox.objects.filter(bounces__gte=bounce_count).update(is_active=False)
+        log.debug( "diabble_mailbox: %d mailboxes have been diabled." % ret )
+            

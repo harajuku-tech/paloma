@@ -155,6 +155,7 @@
     "pk": 3, 
     "model": "paloma.message", 
     "fields": {
+      "mail_message_id" : "<message-3@test>",
       "text": "Hello. Here comes our Spring Sale.\r\nUSER= \r\nGENDER=0 \r\nGrilled Chicken=500", 
       "mailbox": 1, 
       "schedule": 1
@@ -164,6 +165,7 @@
     "pk": 4, 
     "model": "paloma.message", 
     "fields": {
+      "mail_message_id" : "<message-4@test>",
       "text": "Hello. Here comes our Spring Sale.\r\nUSER= \r\nGENDER=1 \r\nGrilled Chicken=600", 
       "mailbox": 2, 
       "schedule": 1

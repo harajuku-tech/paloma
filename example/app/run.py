@@ -6,6 +6,7 @@ os.environ.setdefault("DJANGO_SETTINGS_MODULE", "app.settings")
 APP_DIR=os.path.dirname(__file__)
 LOG_FILE="/tmp/celery.log"  #: celery worker logfile 
 PID_FILE="/tmp/celery.pid"  #: celery worker PID file
+PID_CAM="/tmp/celerycam.pid"
 NODE="celery"           #: celery = default node
 LOG_LEVEL="DEBUG"       #: celery log level
 
@@ -19,21 +20,29 @@ def configure(args):
 
     if  len(args) < 3 or args[2] == "start" :
         #: start worker
+        #: TODO: Check some exiting process
         return [ args[0], 
-                "celeryd",
-                "--loglevel" , LOG_LEVEL,
-                "--pidfile" , PID_FILE, 
-                "--logfile" , LOG_FILE ,
-#                "-E",                       # event option
+#                "celeryd",
+                "celery","worker",
+                "--loglevel=%s" % LOG_LEVEL,
+                "--pidfile=%s"  %  PID_FILE, 
+                "--logfile=%s"  %  LOG_FILE ,
+                "-E",            # event option for celerycam
                 "--beat" , 
-                "--scheduler","djcelery.schedulers.DatabaseScheduler",
+                "--scheduler=djcelery.schedulers.DatabaseScheduler",
             ]
 
     if  len(args) >2 and args[2] == "stop":
         #: stop worker
         return [ args[0],
-                "celeryd_multi",
+                "celery","multi",
                 "stop",NODE,
                 "--pidfile=%s" % PID_FILE, 
             ]
 
+    if  len(args) >2 and args[2] == "cam":
+        #: TODO: Check some exiting process
+        return [ args[0],
+                 "celerycam",
+                "--pidfile=%s" % PID_CAM, 
+               ]

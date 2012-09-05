@@ -350,37 +350,7 @@ class Schedule(models.Model):
     
 class MessageManager(models.Manager):
     ''' Message Manager'''
-
-    def handle_incomming_mail(self,sender,recipient,mssage ):
-        ''' 
-            :param mesage: :py:class:`email.Message`
-        ''' 
-        print "Welcom to Mesage processor" 
-        #: TODO
-        #: 1. check "to" address
-        #:      - Find Owner with domain
-        #:          - no Owner?, forward to system error email
-        #:
-        #: 2. any special mail, call handler
-        #:      - Sign up try
-        #:      - Sign Up
-        #:      - Close account
-        #:      - .....
-        #:
-        #: 3 if a Message of whose destination is qual to "to" is found, 
-        #:      that Message is error bounced
-        #:      
-        #:      -   check if message is spma of not
-        #:          - with Mailman's spam checker or others
-        #:      - (check the error ... )
-        #:      - flag the target Member as "bounced"
-        #:          - Member should not be targeted on the next schedule.         
-        #:
-        #: 4. If Schedule has forward_to:
-        #:      - send message to forward_to
-        #:
-        #: 5. otherwise, do nothing. 
-        pass
+    pass
 
 DEFAULT_RETURN_PATH_RE = r"bcmsg-(?P<message_id>\d+)@(?P<domain>.+)"
 DEFAULT_RETURN_PATH_FORMAT ="bcmsg-%(message_id)s@%(domain)s" 
@@ -422,7 +392,11 @@ class Message(models.Model):
                                 self.schedule.owner.domain )
 
         super(Message,self).save(force_insert,force_update,*args,**kwargs)
-    
+
+    def get_return_path(self):
+        ''' default return path '''
+        return default_return_path( {"message_id" : self.id, 
+                                    "domain": self.schedule.owner.domain } )
 
 
 class JournalManager(models.Manager):

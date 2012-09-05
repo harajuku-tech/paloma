@@ -3,6 +3,7 @@ from django.core.mail import get_connection
 from django.utils.timezone import now
 from django.template import Template,Context
 
+from celery import current_task
 from celery.task import task
 
 import logging
@@ -11,7 +12,9 @@ from paloma.models import (
         Schedule,Group,Mailbox,Message,EmailTask,
         default_return_path ,return_path_from_address
 )
+from paloma.mails import send_mail
 from paloma.actions import EnrollAction
+
 
 CONFIG = getattr(settings, 'PALOMA_EMAIL_TASK_CONFIG', {})
 
@@ -155,8 +158,12 @@ def ask_by_mail(recipient,sender,journal_id,key):
 
 @task
 def bounce(sender,recipient,text,is_jailed=False,*args,**kwawrs):
-    """ bounce worker """
+    """ main bounce worker
+    """
     from models import Journal
+    log= bounce.get_logger()
+
+    log.debug('From=%s To %s (jailed=%s)'  % (sender,recipient,is_jailed) )
 
     #: First of all, save messa to the Journal
     journal=None
@@ -168,17 +175,19 @@ def bounce(sender,recipient,text,is_jailed=False,*args,**kwawrs):
             text=text)
         journal.save()
     except Exception,e:
-        print e
+        log.debug( str(e) )
     
     if is_jailed == True:
         return
 
     #:Error Mail Handler 
     if process_error_mail(recipient,sender,journal.id):
+        log.debug("no error")
         return  
 
     #:EmailTask ( mail registraton ....  )
     if enqueue_email_task(recipient,sender,journal.id):
+        log.debug("no mail command")
         return
 
 @task
@@ -192,21 +201,18 @@ def trigger_schedule(sender=None):
 
     return True
 
-# backwards compat
-#SendEmailTask = send_email
-
 @task
 def enqueue_schedule(sender,id=None):
     ''' enqueue specifid mail schedule , or all schedules
     '''
+    log = current_task.get_logger()
 
-    args={}
-    if id !=None:
-        args['id'] = id
+    args={'id':id} if id else {}
+    log.debug("specified Schedule id = %s" % str(args))
 
     for s in Schedule.objects.filter(**args):
         if s.status== "scheduled":
-            generate_messages_for_schedule(sender,s.id ) #: Asynchronized Call
+            generate_messages_for_schedule.delay(sender,s.id ) #: Asynchronized Call
             s.status = "active"
             s.save()
 
@@ -214,19 +220,22 @@ def enqueue_schedule(sender,id=None):
 def generate_messages_for_schedule(sender,schedule_id):
     ''' Generate messages for speicifed Schedule
     '''
+    log = current_task.get_logger()
     try:   
         schedule = Schedule.objects.get(id = schedule_id ) 
         for g in schedule.groups.all():
             for m in g.mailbox_set.exclude(user=None):
                 #: TODO: Exclude  user == None or is_active ==False or forward == None
-                generate_message(sender,schedule.id,g.id,m.id )
+                generate_message.delay(sender,schedule.id,g.id,m.id )
     except Exception,e:
-        raise e
+        log.error( "generate_messages_for_schedule():" +  str(e) )
 
 @task
 def generate_message(sender,schedule_id,group_id, mailbox_id ): 
     ''' Generate (or update) message for specifed group and mailbox
     '''
+    log = current_task.get_logger()
+    current_time = now()
     try:
         schedule = Schedule.objects.get(id=schedule_id )
         group = Group.objects.get(id=group_id)
@@ -242,10 +251,46 @@ def generate_message(sender,schedule_id,group_id, mailbox_id ):
         msg.text = Template(schedule.text).render(Context(context))
         msg.save()
 
+        if current_time >= schedule.dt_start: #:TODO : 1 minutes 
+            #: sendmail right now
+            send_message(message_obj=msg) 
+        else :
+            #: sendmail later
+            send_message.apply_async([msg.id],eta=msg.dt_start )
+
     except Exception,e:
-        raise e 
+        log.error("generate_message()" + str(e))
 
-
+@task
+def send_message(message_id=None,message_obj=None):
+    ''' send actual message
+        
+    .. todo::
+        - Message status is required
+    '''
+    log = current_task.get_logger()
+    try:
+        msg = message_obj if message_obj != None else Messsage.objects.get(id=message_id) 
+        #:TODO: check message status. If already "SENDING" or "CANCELD", don't send
+        #       check schedue status. If already "CANCELD", don't send
+        send_mail(msg.schedule.subject,     #:TODO: Message should have rendered subject
+                  msg.text,
+                  "info@"+msg.schedule.owner.domain, #:TODO: Owner "symbol" to be defined and compose from address
+                  [msg.mailbox.address],
+                  return_path = msg.get_return_path(),
+                  message_id = msg.mail_message_id,
+            )
+        #:TODO: change the status
+                  
+    except Message.DoesNotExist ,e:
+        log.error("send_message():No Message record for id=%s" % message_id)
+    except Exception,e:
+        #: STMP error... ?
+        log.error("send_message(): %s" % str(e))
+        #:TODO: 
+        #   - error message to Message
+        #   - change status of Message
+        
 @task
 def disable_mailbox(bounce_count=None,*args,**kwargs):
     '''  

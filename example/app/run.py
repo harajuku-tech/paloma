@@ -46,3 +46,11 @@ def configure(args):
                  "celerycam",
                 "--pidfile=%s" % PID_CAM, 
                ]
+
+    if  len(args) >2 and args[2] == "camstop":
+        #: TODO: Check some exiting process
+        return [ args[0],
+                "celery","multi",
+                "stop",NODE,
+                "--pidfile=%s" % PID_CAM, 
+            ]

@@ -20,6 +20,8 @@ DATABASES = {
         'PASSWORD': 'paloma',                  # Not used with sqlite3.
         'HOST': '',                      # Set to empty string for localhost. Not used with sqlite3.
         'PORT': '',                      # Set to empty string for default. Not used with sqlite3.
+        'TEST_CHARSET': 'utf8',
+        'TEST_DATABASE_COLLATION': 'utf8_general_ci',
     }
 #    #:- this secondary database is for postfix-mysql 
 #    ,'postfix': {
@@ -124,6 +126,7 @@ TEMPLATE_DIRS = (
     # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
+    os.path.join(PROJECT_DIR,'templates'),
 )
 
 INSTALLED_APPS = (
@@ -168,17 +171,7 @@ LOGGING = {
     }
 }
 
-########
-
-# ---- Custom Configuration 
-
-# - paloma
-
-INSTALLED_APPS +=('paloma',)  #: this project.
-
-# - mandb for MySQL command shortcuts
-
-INSTALLED_APPS +=('mandb',)  #:  tools for MySQL
+######## Custom Configuration 
 
 # - south for data migration
 if 'test' not in sys.argv:
@@ -187,27 +180,58 @@ if 'test' not in sys.argv:
     pass
 
 # - django-celery for asynchoronous task queue
-
+#
 INSTALLED_APPS += ('djcelery','djkombu',)
-# -- Django Backend
+#: Broker
 #BROKER_URL="django://"
-BROKER_URL = 'amqp://guest:guest@localhost:5672//'
+#BROKER_URL = 'amqp://guest:guest@localhost:5672//'
+BROKER_URL = 'amqp://paloma:paloma@localhost:5672/paloma'
+#BROKER_URL = 'redis://localhost:6379/0'
+#BROKER_URL = 'mongodb://localhost:27017/paloma'
 #
 #CELERY_ALWAYS_EAGER = True  #:True: synchronous
+#: Serializer
 #CELERY_TASK_SERIALIZER='json'
 CELERY_TASK_SERIALIZER='pickle'
+#: Persistent Worker State
+CELERYD_STATE_DB=os.path.join(PROJECT_DIR,'celery_state.db')
 #
 import djcelery
 djcelery.setup_loader()
 
-# - paloma for mail transfer agents
-EMAIL_BACKEND = 'paloma.backends.CeleryEmailBackend'
-PALOMA_EMAIL_BACKEND = 'django.core.mail.backends.locmem.EmailBackend'
 #CELERY_EMAIL_TASK_CONFIG = {
 #    'queue' : 'django_email',
 #    'delivery_mode' : 1, # non persistent
 #    'rate_limit' : '50/m', # 50 emails per minute
 #}
+
+# --- Paloma Configuration
+#
+INSTALLED_APPS +=('paloma',)  #: this project.
+#
+SMTP_EMAIL_BACKEND='paloma.backends.SmtpEmailBackend'
+#
+from kombu import Exchange, Queue
+CELERY_DEFAULT_QUEUE = 'paloma'
+CELERY_QUEUES = ( 
+    Queue('paloma', Exchange('paloma'), routing_key='paloma'),
+)
+
+# - paloma for mail transfer agents
+if 'test' not in sys.argv:
+    EMAIL_BACKEND = 'paloma.backends.PalomaEmailBackend'
+#    EMAIL_BACKEND = 'paloma.backends.JournalEmailBackend'
+else:
+    #: in testing. save messages directory to Journal model
+    EMAIL_BACKEND = 'paloma.backends.JournalEmailBackend'
+
+ 
+# -- sample app
+
+INSTALLED_APPS +=(
+        'app.accounts', #: Sample Membership Management
+        'app.foods',    #:  Sammple application for Paloma
+        ) 
 
 # -- django-extensinon
 
@@ -216,4 +240,8 @@ INSTALLED_APPS +=('django_extensions',)  #:  tools for django-extensions
 # - logging
 import applogs
 applogs.config(LOGGING)
+
+# - mandb for MySQL command shortcuts
+
+INSTALLED_APPS +=('mandb',)  #:  tools for MySQL
 

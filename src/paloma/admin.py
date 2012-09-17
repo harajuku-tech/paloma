@@ -1,11 +1,18 @@
 # -*- coding: utf-8 -*- 
 from django.contrib import admin
-from models import *
 from django.conf import settings
+from django.utils.timezone import now
+
+from celery import app
+
+from models import *
+from tasks import enqueue_schedule
+
 
 if settings.DEBUG:
     try:
         from djkombu.models import Queue as KombuQueue,Message as KombuMessage
+        from djcelery.models import TaskMeta,TaskSetMeta
 
         ### KombuQueue
         class KombuQueueAdmin(admin.ModelAdmin):
@@ -22,6 +29,19 @@ if settings.DEBUG:
         class KombuMessageAdmin(admin.ModelAdmin):
             list_display=tuple([f.name for f in KombuMessage._meta.fields])
         admin.site.register(KombuMessage,KombuMessageAdmin)
+
+        ### TaskMeta
+        class TaskMetaAdmin(admin.ModelAdmin):
+            list_display=tuple([f.name for f in TaskMeta._meta.fields])
+            list_filter = ('status',)
+            date_hierarchy = 'date_done'
+        admin.site.register(TaskMeta,TaskMetaAdmin)
+        
+        ### TaskSetMeta
+        class TaskSetMetaAdmin(admin.ModelAdmin):
+            list_display=tuple([f.name for f in TaskSetMeta._meta.fields])
+        admin.site.register(TaskSetMeta,TaskSetMetaAdmin)
+        
         
     except Exception,e:
         print e
@@ -43,6 +63,11 @@ class OwnerAdmin(admin.ModelAdmin):
     list_display=('name','user','domain','forward_to',)
 admin.site.register(Owner,OwnerAdmin)
 
+### Operator 
+class OperatorAdmin(admin.ModelAdmin):
+    list_display=('owner','user', )
+admin.site.register(Operator,OperatorAdmin)
+
 ### Group 
 class GroupAdmin(admin.ModelAdmin):
     list_display=('name','owner','symbol','main_address')
@@ -51,20 +76,63 @@ admin.site.register(Group,GroupAdmin)
 
 ### Mailbox 
 class MailboxAdmin(admin.ModelAdmin):
-    list_display=('id', 'user', 'address', 'is_active', 'bounces' )
+    list_display=('id', 'user', 'address', 'is_active', 'bounces',)
 admin.site.register(Mailbox,MailboxAdmin)
+
+### Enroll 
+class EnrollAdmin(admin.ModelAdmin):
+    list_display=('id','enroll_type', 'mailbox','group', 'inviter', 'prospect',
+                    'url','secret','short_secret',
+                    'dt_expire','dt_try', 'dt_commit' )
+    list_filter=('enroll_type',)
+    
+admin.site.register(Enroll,EnrollAdmin)
+
+### Notice 
+class NoticeAdmin(admin.ModelAdmin):
+    list_display=tuple([f.name for f in Notice._meta.fields ])
+admin.site.register(Notice,NoticeAdmin)
 
 ### Schedule 
 class ScheduleAdmin(admin.ModelAdmin):
-    list_display=['id', 'owner', 'subject', 'text', 'dt_start', 'forward_to']
+    list_display=['status','id', 'owner', 'subject', 'text', 'dt_start', 'forward_to','task']
+
+    def save_model(self, request, obj, form, change):
+        ''' Saving... 
+
+            :param request: request object to view
+            :param obj: Schedule instance
+            :param form: Form instance
+            :param change: bool
+        ''' 
+        if 'status' in form.changed_data :
+            if obj.status == 'scheduled':
+                if  obj.dt_start < now() or  ( obj.task != None and obj.task !="")  :
+                    #: Don not save()
+                    return
+                #: create_task
+                t = enqueue_schedule.apply_async(("admin",obj.id),{},eta=obj.dt_start)
+                obj.task =t.id                  
+
+            elif obj.status == "canceled":
+                if obj.task != None:
+                    app.current_app().control.revoke(obj.task)
+
+        super(ScheduleAdmin,self).save_model(request,obj,form,change)
+
 admin.site.register(Schedule,ScheduleAdmin)
 ### Message 
 class MessageAdmin(admin.ModelAdmin):
-    list_display=('schedule','mailbox',)
+    list_display=('schedule','mailbox','mail_message_id',)
 admin.site.register(Message,MessageAdmin)
 
 ### Journal 
 class JournalAdmin(admin.ModelAdmin):
     list_display=tuple([f.name for f in Journal._meta.fields ])
 admin.site.register(Journal,JournalAdmin)
+
+### EmailTask 
+class EmailTaskAdmin(admin.ModelAdmin):
+    list_display=tuple([f.name for f in EmailTask._meta.fields ])
+admin.site.register(EmailTask,EmailTaskAdmin)
 

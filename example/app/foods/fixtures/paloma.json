@@ -58,7 +58,7 @@
     "model": "paloma.schedule", 
     "fields": {
       "text": "Hello. Here comes our Spring Sale.\r\nUSER={{ user}} \r\nGENDER={{customer.gender}} \r\n{{product.name}}={{price.price}}", 
-      "dt_start": "2012-03-10 06:00:00", 
+      "dt_start": "2012-03-10T06:00:00+09:00", 
       "forward_to": "", 
       "groups": [
         1, 

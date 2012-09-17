@@ -7,11 +7,24 @@ from django.conf import settings
 from django.core import mail
 #
 class ScheduleTests(TestCase):
+    ''' Grilled Chicken Promotion
+
+            - Shop
+
+                - Harajuku      Price = 500
+                - Shibuya       Price = 600
+
+            - Customer
+
+                - Male
+                - Femail 
+            
+    '''
 
     fixtures=['auth','paloma','foods']
 
     def test_simple(self):
-        ''' python manage.py test foods.ScheduleTests.test_simple
+        ''' python ../manage.py test foods.ScheduleTests.test_simple
         '''
         from paloma.models import Schedule,Message
         for m in Schedule.objects.all():
@@ -22,7 +35,7 @@ class ScheduleTests(TestCase):
             print m.text 
 
     def test_get_context(self):
-        ''' python manage.py test foods.ScheduleTests.test_get_context
+        ''' python ../manage.py test foods.ScheduleTests.test_get_context
         '''
         from paloma.models import Schedule
         

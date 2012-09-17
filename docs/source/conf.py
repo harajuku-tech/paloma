@@ -291,11 +291,11 @@ intersphinx_mapping = {'http://docs.python.org/': None}
 #--------
 
 # Django
-DOC_PATH= os.path.dirname(os.path.dirname( os.path.abspath(__file__)))
-PRJ_PATH= os.path.join(os.path.dirname(DOC_PATH),"example/app")
-sys.path.insert(0, os.path.dirname(PRJ_PATH ))
-sys.path.insert(0, os.path.join(os.path.dirname(PRJ_PATH ),'app'))
-from django.core.management import execute_manager
-import imp
-imp.find_module('settings') # Assumed to be in the same directory.
-#
+PRJ_PATH= os.path.dirname( os.path.dirname( os.path.abspath(__file__)) ) 
+print PRJ_PATH
+sys.path.insert(0, os.path.join(os.path.dirname(PRJ_PATH ),'example'))
+sys.path.insert(0, os.path.join(os.path.dirname(PRJ_PATH ),'example/app'))
+os.environ['DJANGO_SETTINGS_MODULE'] = 'app.settings'
+
+# Graphviz to draw ER 
+extensions.append('sphinx.ext.graphviz')#

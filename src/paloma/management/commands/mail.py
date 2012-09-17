@@ -1,37 +1,36 @@
 # -*- coding: utf-8 -*-
 
-from django.core.management.base import BaseCommand, CommandError
+from paloma.management.commands import GenericCommand
+from paloma.mails import send_mail_simple,send_mail_from_file
+from paloma.tasks import trigger_schedule
+
+from django.utils import timezone, dateparse
 
 from optparse import make_option
 from datetime import datetime
 import commands
 import os
+import uuid
 
-class Command(BaseCommand):
+class Command(GenericCommand):
     ''' paloma maile management
     '''
     args = ''
     help = ''
 
-    option_list = BaseCommand.option_list + (
+    option_list = GenericCommand.option_list + (
 
-        make_option('--command',
+        make_option('-t','--time',
             action='store',
-            dest='command',
-            default='help',
-            help=u'sub command'),
+            dest='time',
+            default=None,
+            help=u'time to trigger'),
 
-        make_option('--file',
+        make_option('-r','--return_path',
             action='store',
-            dest='file',
-            default='stdin',
-            help=u'flle'),
-
-        make_option('--encoding',
-            action='store',
-            dest='encoding',
-            default='utf-8',
-            help=u'encoding'),
+            dest='return_path',
+            default=None,
+            help=u'mailbox to be returned'),
         )
     ''' Command Option '''
 
@@ -39,13 +38,22 @@ class Command(BaseCommand):
         '''　send
 
         '''
-        import sys
-        from email import message_from_file
-        fp = sys.stdin if options['file'] == 'stdin' else open(options['file'])
-        msg = message_from_file(fp)
+        extra = { "return_path" : options.get('return_path',None), 
+                  "message_id"  : "paloma-%s" % uuid.uuid1().hex, 
+                } 
+        send_mail_from_file( self.open_file(options), **extra )
 
-        from django.core.mail import send_mail
-        send_mail(msg['Subject'],str(msg),msg['From'],msg['To'].split(',') )
+    def handle_trigger(self,*args,**options):
+        ''' trigger schedule
+        '''
+        if options['time'] != None:
+            eta = timezone.make_aware( 
+                    dateparse.parse_datetime(options['time']) ,
+                    timezone.get_current_timezone())
+        else :
+            eta=None 
+        t=trigger_schedule.apply_async(eta=eta)
+        print "Task is scheduled.id=",t.id
 
     def handle_help(self,*args,**options):
         '''  help
@@ -56,9 +64,3 @@ class Command(BaseCommand):
             if m == None:
                 continue
             print m.group(1)
-
-    def handle(self  ,*args, **options):
-        '''  command main '''
-
-        getattr(self, 'handle_%s'% options['command'],Command.handle_help)(*args,**options)
-

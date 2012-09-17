@@ -3,6 +3,8 @@ from django.core.mail.backends.base import BaseEmailBackend
 
 from paloma.tasks import send_email
 
+from django.conf import settings
+
 class CeleryEmailBackend(BaseEmailBackend):
 
     def send_messages(self, email_messages, **kwargs):

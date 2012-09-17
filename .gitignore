@@ -1,6 +1,7 @@
 *.pyc
 *.pyo
 *.swp
+*.pid
 .egg-info
 docs/build/
 build
@@ -8,4 +9,5 @@ dist
 src/paloma.egg-info
 run
 app.log*
+*.DS_Store
 

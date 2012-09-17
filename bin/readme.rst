@@ -1,9 +1,32 @@
-wakeup_celery.bash
+Running Script
 =======================
 
-cron configuration
+Setup
+-------
 
 ::
 
-    */1 * * * *   /home/hdknr/ve/main/src/cms/nr_sitecast/bin/wakeup_celery.bash 
+    sudo cp paloma.sh /etc/init.d/paloma
 
+Configure
+------------
+
+::
+
+    sudo vim /etc/init.d/paloma
+
+
+Install
+-----------
+
+::
+
+    sudo /etc/init.d/paloma install
+
+Uninstall
+-----------
+
+::
+
+    sudo /etc/init.d/paloma uninstall
+    sudo rm /etc/init.d/paloma

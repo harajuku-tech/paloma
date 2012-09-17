@@ -12,14 +12,27 @@ class GenericCommand(BaseCommand):
     '''
     args = ''
     help = ''
+    model=None
 
     option_list = BaseCommand.option_list + (
 
         make_option('--id',
             action='store',
             dest='id',
-            default='help',
+            default=None,
             help=u'message id'),
+
+        make_option('-s','--sync',
+            action='store_true',
+            dest='sync',
+            default=False,
+            help=u'Synchronous Call'),
+
+        make_option('--file',
+            action='store',
+            dest='file',
+            default='stdin',
+            help=u'flle'),
 
         make_option('--encoding',
             action='store',
@@ -29,6 +42,9 @@ class GenericCommand(BaseCommand):
         )
     ''' Command Option '''
 
+    def handle_count(self,*args,**option):
+        if self.model:
+            print self.model,self.model.objects.count()
         
     def handle_help(self,*args,**options):
         '''  help
@@ -39,11 +55,13 @@ class GenericCommand(BaseCommand):
             if m == None:
                 continue
             print m.group(1)
+        print args
+        print options
 
     def handle(self  ,*args, **options):
         '''  command main '''
 
-        if len(args) < 3 :
+        if len(args) < 1 :
             return "a sub command must be specfied"
         self.command = args[0]
         getattr(self, 'handle_%s'% self.command ,GenericCommand.handle_help)(*args,**options)

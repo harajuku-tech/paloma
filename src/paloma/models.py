@@ -7,6 +7,7 @@ from django.contrib.auth import authenticate
 from django.core.urlresolvers import reverse
 
 from datetime import datetime,timedelta
+from django.utils.timezone import now
 import sys,traceback
 
 class Domain(models.Model):
@@ -55,7 +56,7 @@ class Alias(models.Model):
         - for local usr
         - value for virtual_alias_maps.cf  
     '''
-    created = models.DateTimeField(default=datetime.now)
+    created = models.DateTimeField(default=now)
     modified = models.DateTimeField()
     class Meta:
         pass
@@ -134,6 +135,21 @@ class Mailbox(models.Model):
     def __unicode__(self):
        return self.user.__unicode__() + "(%s)"% self.address 
 
+class ScheduleManager(models.Manager):
+    ''' Schedule Manager '''
+
+    def enqueue_messages(self,id=None):
+        ''' enqueue_messages
+
+            :param id: Schedule id
+        ''' 
+        args={}
+        if id !=None:
+            args['id'] = id
+
+        for s in self.filter(): 
+            s.generate_messages()
+
 class Schedule(models.Model):
     ''' Message Delivery Schedule'''
 
@@ -149,12 +165,13 @@ class Schedule(models.Model):
     groups = models.ManyToManyField(Group ,verbose_name=u'Traget Groups ' )
     ''' Group '''
 
-    dt_start =  models.DateTimeField(u'Start to send '  ,help_text=u'created datetime',default=datetime.now )
+    dt_start =  models.DateTimeField(u'Start to send '  ,help_text=u'created datetime',default=now )
     ''' Stat datetime to send'''
 
     forward_to= models.CharField(u'Forward address',max_length=100 ,default=None,null=True,blank=True)
     ''' Forward address for incomming email '''
 
+    objects = ScheduleManager()
     #: TODO : other management
     #: TODO:  Filtering 
 

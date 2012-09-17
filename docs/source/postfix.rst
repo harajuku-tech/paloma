@@ -19,9 +19,14 @@ Postfix MySQL virtual configutaiton of this sample uses the application database
 
 ::
 
-    $ python manage.py syncdb
+    $ python ../manage.py syncdb
 
 - run migrate if required becase the sample app depends on :term:`south` migration tool.
+
+::
+
+    $ python ../manage.py migrate djcelery
+    $ python ../manage.py migrate paloma
 
 
 /etc/postfix configuration files
@@ -35,25 +40,43 @@ For quick, copy your original Postfix configuation to backup , ::
     -rw-r--r-- 1 root root 1239 2012-03-04 16:21 main.cf.dist
     -rw-r--r-- 1 root root 5301 2012-03-04 16:21 master.cf.dist
 
-And create symlinks for {{SOURCE}}/postfix/\*.cf files and **virtual** directory  ::
+And create symlinks for {{SOURCE}}/postfix/\*.cf files and **virtual** directory  
+
+::
+  
+    (tact)hdknr@wzy:/etc/postfix$ sudo ln -s /home/hdknr/ve/tact/src/paloma/postfix/virtual 
+    (tact)hdknr@wzy:/etc/postfix$ sudo ln -s /home/hdknr/ve/tact/src/paloma/postfix/master.cf 
+    (tact)hdknr@wzy:/etc/postfix$ sudo ln -s /home/hdknr/ve/tact/src/paloma/postfix/main.cf
+
+::
 
 
     lrwxrwxrwx   1 root root    48 2012-04-01 10:24 main.cf -> /home/hdknr/ve/paloma/src/paloma/postfix/main.cf
     lrwxrwxrwx   1 root root    50 2012-04-01 10:24 master.cf -> /home/hdknr/ve/paloma/src/paloma/postfix/master.cf
     lrwxrwxrwx   1 root root    49 2012-04-01 10:41 virtual -> /home/hdknr/ve/paloma/src/paloma/postfix/virtual/
 
-
 Edit master.cf
 ----------------------------
 
-- change your paloma_bouncer.py script path
+- change your paloma_bouncer.py script path 
+  and Django project path as the first arguemnt to the paloma_bouncer.py.
+
+::
+
+    paloma unix  -       n       n       -       -       pipe
+      flags=FDRq user=hdknr argv=/home/hdknr/ve/tact/bin/paloma_bouncer.py 
+      /home/hdknr/ve/tact/src/paloma/example/app main $sender $recipient
+
+    jail   unix  -       n       n       -       -       pipe
+      flags=FDRq user=hdknr argv=/home/hdknr/ve/tact/bin/paloma_bouncer.py
+      /home/hdknr/ve/tact/src/paloma/example/app jail $sender $recipient
 
 
 Edit virtual/mysql/ files
 -----------------------------------------------
 
-- change your database access infomation 
-
+- change your database access infomation .
+- See `MYSQL_TABLE(5) <http://www.postfix.org/mysql_table.5.html>`_  for configure access information.
 
 /etc/hosts
 ============
@@ -87,6 +110,12 @@ Add a Domain
         }
       }
     ]
+
+::
+
+    (tact)$ python ../manage.py loaddata ../../src/paloma/fixtures/fixture.paloma_domain.1.json 
+
+    Installed 1 object(s) from 1 fixture(s)
 
 Send a test mail
 ==================

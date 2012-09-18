@@ -41,7 +41,8 @@
 
 import sys
 import os
-sys.path.insert(0, os.path.abspath('src'))
+DIR=os.path.dirname( os.path.abspath(__file__))
+sys.path.insert(0, os.paht.join(DIR,'src'))
 
 from setuptools import setup
 
@@ -53,9 +54,10 @@ import glob
 NAME='paloma'
 DESCRIPTION=''
 PACKAGES=['paloma',]
-SCRIPTS=glob.glob('src/scripts/*.py')
+SCRIPTS=glob.glob( os.path.join(DIR,'src/scripts/*.py'))
 try:
-    INSTALL_REQUIRES=[ r for r in open('requirements.txt').read().split('\n') if len(r)>0]
+    INSTALL_REQUIRES=[ r for r 
+            in open( os.path.join(DIR,'requirements.txt')).read().split('\n') if len(r)>0]
 except:
     INSTALL_REQUIRES=[] 
 

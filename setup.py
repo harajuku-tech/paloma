@@ -56,10 +56,11 @@ DESCRIPTION=''
 PACKAGES=['paloma',]
 SCRIPTS=glob.glob( os.path.join(DIR,'src/scripts/*.py'))
 try:
-    INSTALL_REQUIRES=[ r for r 
-            in open( os.path.join(DIR,'requirements.txt')).read().split('\n') if len(r)>0]
+    INSTALL_REQUIRES=[ r.replace('\n','')  for r in
+            open(os.path.join(DIR,'requirements.txt'))
+                if len(r)>0 and re.search(r"-e",r) == None ]
 except:
-    INSTALL_REQUIRES=[] 
+    INSTALL_REQUIRES=None
 
 # - readme
 
@@ -100,4 +101,5 @@ if __name__=='__main__':
         zip_safe = False,
         scripts=SCRIPTS,
         install_requires = INSTALL_REQUIRES,
+        extra_requires={},
     )

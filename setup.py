@@ -42,7 +42,7 @@
 import sys
 import os
 DIR=os.path.dirname( os.path.abspath(__file__))
-sys.path.insert(0, os.paht.join(DIR,'src'))
+sys.path.insert(0, os.path.join(DIR,'src'))
 
 from setuptools import setup
 
@@ -65,7 +65,7 @@ except:
 
 def read(fname):
     """Utility function to read the README file."""
-    return open(os.path.join(os.path.dirname(__file__), fname)).read()
+    return open(os.path.join(DIR, fname)).read()
 
 if __name__=='__main__':
     setup(

@@ -11,7 +11,7 @@ from tasks import enqueue_schedule
 
 if settings.DEBUG:
     try:
-        from djkombu.models import Queue as KombuQueue,Message as KombuMessage
+        from kombu.transport.django.models import Queue as KombuQueue,Message as KombuMessage
         from djcelery.models import TaskMeta,TaskSetMeta
 
         ### KombuQueue

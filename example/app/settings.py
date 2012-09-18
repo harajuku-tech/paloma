@@ -181,7 +181,7 @@ if 'test' not in sys.argv:
 
 # - django-celery for asynchoronous task queue
 #
-INSTALLED_APPS += ('djcelery','djkombu',)
+INSTALLED_APPS += ('djcelery','kombu.transport.django',)
 #: Broker
 #BROKER_URL="django://"
 #BROKER_URL = 'amqp://guest:guest@localhost:5672//'
